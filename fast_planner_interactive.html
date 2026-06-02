@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HistoryAssistant New Structure Demo</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; }
+:root {
+  --ink: #172033;
+  --muted: #607086;
+  --line: #d8e1ec;
+  --panel: #ffffff;
+  --soft: #f7f9fc;
+  --blue: #2563eb;
+  --blue-soft: #e8f2ff;
+  --green: #16a34a;
+  --green-soft: #ebfaef;
+  --amber: #d97706;
+  --amber-soft: #fff6df;
+  --red: #dc2626;
+  --red-soft: #fee8e8;
+}
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, sans-serif;
+  background: #f4f7fb;
+  color: var(--ink);
+  min-height: 100vh;
+}
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 30px 18px 94px;
+}
+.eyebrow {
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #75859a;
+  margin-bottom: 10px;
+}
+h1 {
+  margin: 0 0 10px;
+  color: #0f172a;
+  font-size: 2.05rem;
+}
+.subtitle {
+  max-width: 900px;
+  margin: 0 0 22px;
+  color: #526176;
+  line-height: 1.6;
+}
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.8fr);
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(23, 32, 51, 0.06);
+}
+.control-card { padding: 17px; }
+.label {
+  font-size: 0.72rem;
+  color: #7b8aa0;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+select {
+  width: 100%;
+  border: 1px solid #c5d1df;
+  border-radius: 10px;
+  padding: 12px 13px;
+  color: var(--ink);
+  background: #fff;
+  font-size: 0.95rem;
+}
+.question {
+  background: var(--blue-soft);
+  border: 1px solid #bad7ff;
+  color: #1457a6;
+  font-weight: 900;
+  line-height: 1.45;
+  border-radius: 12px;
+  padding: 14px 15px;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+}
+.pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+.pill {
+  font-size: 0.73rem;
+  font-weight: 900;
+  border-radius: 999px;
+  padding: 5px 10px;
+  border: 1px solid #d5e2f2;
+  background: #f4f8fd;
+  color: #42617e;
+}
+.pill.fast { border-color: #bce8c8; background: var(--green-soft); color: #166534; }
+.pill.llm { border-color: #ffd79a; background: var(--amber-soft); color: #92400e; }
+.pill.source { border-color: #bad7ff; background: #eef6ff; color: #155aa6; }
+.pipeline-card { padding: 18px; margin-bottom: 18px; overflow-x: auto; }
+.pipeline-title {
+  font-weight: 900;
+  color: #334155;
+  margin-bottom: 14px;
+}
+.pipeline-groups {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(100px, 1fr));
+  gap: 7px;
+  min-width: 1080px;
+  margin-bottom: 0;
+}
+.group-label {
+  text-align: center;
+  font-size: 0.63rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 5px 8px;
+  border-radius: 8px 8px 0 0;
+  color: transparent;
+}
+.group-label.routing {
+  background: rgba(100,116,139,0.06);
+  border: 1.5px solid rgba(100,116,139,0.2);
+  border-bottom: none;
+  color: #64748b;
+}
+.group-label.planner {
+  background: rgba(37,99,235,0.07);
+  border: 1.5px solid rgba(37,99,235,0.25);
+  border-bottom: none;
+  color: #2563eb;
+}
+.group-label.exec {
+  background: rgba(22,163,74,0.06);
+  border: 1.5px solid rgba(22,163,74,0.2);
+  border-bottom: none;
+  color: #16a34a;
+}
+.pipeline {
+  display: grid;
+  grid-template-columns: repeat(10, minmax(100px, 1fr));
+  gap: 7px;
+  min-width: 1080px;
+}
+.node.in-routing {
+  border-color: rgba(100,116,139,0.3);
+  border-radius: 0 0 10px 10px;
+  border-top: none;
+  background: rgba(100,116,139,0.03);
+}
+.node.in-planner {
+  border-color: rgba(37,99,235,0.25);
+  border-radius: 0 0 10px 10px;
+  border-top: none;
+  background: rgba(37,99,235,0.03);
+}
+.node.in-exec {
+  border-color: rgba(22,163,74,0.2);
+  border-radius: 0 0 10px 10px;
+  border-top: none;
+  background: rgba(22,163,74,0.02);
+}
+.node {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  min-height: 96px;
+  padding: 8px 9px;
+  background: #fbfcfe;
+  position: relative;
+  cursor: pointer;
+  transition: 0.18s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+.node::after {
+  content: "";
+  position: absolute;
+  right: -9px;
+  top: 50%;
+  width: 9px;
+  height: 2px;
+  background: #b9c5d4;
+}
+.node:last-child::after { display: none; }
+.node:hover, .node.active {
+  border-color: #8bbff5;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.13);
+}
+.node.start, .node.answer {
+  border-radius: 999px;
+  background: #eaf4ff;
+  border-color: #9dc9ff;
+}
+.node.decision {
+  background: var(--amber-soft);
+  border-color: #f4bf61;
+  border-radius: 8px;
+  transform: rotate(0deg);
+}
+.node.fast-path { background: var(--green-soft); border-color: #9dddaf; }
+.node.llm-path { background: #fff6e8; border-color: #ffc977; }
+.node.fail-path { background: var(--red-soft); border-color: #f7aaaa; }
+.node-kicker {
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #7a8aa0;
+  margin-bottom: 4px;
+}
+.node-name {
+  font-size: 0.78rem;
+  font-weight: 900;
+  color: #172033;
+  line-height: 1.2;
+}
+.node-note {
+  font-size: 0.66rem;
+  line-height: 1.25;
+  color: #64748b;
+  margin-top: 5px;
+}
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) 330px;
+  gap: 18px;
+}
+.main-card { padding: 24px; }
+.side-card {
+  padding: 18px;
+  height: fit-content;
+  position: sticky;
+  top: 16px;
+}
+.stage { display: none; }
+.stage.active {
+  display: block;
+  animation: fadeUp 0.22s ease both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.stage-head {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.num {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+}
+.stage-title {
+  font-size: 1.18rem;
+  font-weight: 900;
+  color: #0f172a;
+}
+.stage-role {
+  color: #75859a;
+  font-size: 0.82rem;
+  margin-top: 3px;
+}
+.desc {
+  border-bottom: 1px solid #e4eaf2;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  color: #526176;
+  line-height: 1.64;
+  font-size: 0.95rem;
+}
+.output-label {
+  color: #75859a;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 9px;
+}
+.code, .prose, .table-wrap, .compare-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+.code {
+  padding: 15px 17px;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: #334155;
+}
+.prose {
+  padding: 15px 17px;
+  color: #334155;
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+.compare-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.compare-col {
+  padding: 16px;
+}
+.compare-col + .compare-col { border-left: 1px solid #e2e8f0; }
+.compare-heading {
+  font-size: 0.82rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+}
+.compare-heading.old { color: #b45309; }
+.compare-heading.new { color: #166534; }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+th, td {
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 12px;
+  text-align: left;
+  font-size: 0.86rem;
+}
+th {
+  background: #f8fafc;
+  color: #526176;
+  font-weight: 900;
+}
+tr:last-child td { border-bottom: none; }
+.bars { padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; }
+.bar-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 76px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.bar-label { color: #526176; font-size: 0.8rem; text-align: right; }
+.bar-track {
+  height: 18px;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+.bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 999px;
+  transition: width 0.65s ease;
+  background: var(--blue);
+}
+.bar-fill.fast { background: var(--green); }
+.bar-fill.llm { background: var(--amber); }
+.bar-value { font-size: 0.8rem; font-weight: 900; }
+.answer-card {
+  background: var(--green-soft);
+  border: 1.5px solid #bce8c8;
+  border-radius: 14px;
+  padding: 22px;
+}
+.answer-head {
+  color: #166534;
+  font-size: 1.08rem;
+  font-weight: 900;
+  margin-bottom: 8px;
+}
+.answer-text {
+  color: #405063;
+  line-height: 1.62;
+}
+.side-title {
+  font-weight: 900;
+  color: #0f172a;
+  margin-bottom: 12px;
+}
+.side-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+.side-item {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 11px;
+  padding: 11px 12px;
+  cursor: pointer;
+}
+.side-item.active {
+  border-color: #bad7ff;
+  background: #eaf4ff;
+}
+.side-step {
+  color: #2563eb;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.side-name {
+  color: var(--ink);
+  font-weight: 900;
+  font-size: 0.88rem;
+  margin-top: 4px;
+}
+.side-note {
+  color: #64748b;
+  font-size: 0.76rem;
+  line-height: 1.4;
+  margin-top: 3px;
+}
+.nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-top: 1px solid var(--line);
+  background: rgba(244,247,251,0.96);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+}
+.btn {
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 22px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+.btn-prev {
+  background: #fff;
+  color: #475569;
+  border: 1px solid var(--line);
+}
+.btn-next {
+  background: var(--blue);
+  color: #fff;
+  min-width: 132px;
+}
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.counter {
+  min-width: 74px;
+  text-align: center;
+  color: #75859a;
+  font-weight: 900;
+  font-size: 0.82rem;
+}
+@media (max-width: 1000px) {
+  .toolbar, .layout, .pipeline { grid-template-columns: 1fr; }
+  .side-card { position: static; }
+  .node::after { display: none; }
+  .compare-box { grid-template-columns: 1fr; }
+  .compare-col + .compare-col { border-left: none; border-top: 1px solid #e2e8f0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="eyebrow">HistoryAssistant Demo</div>
+  <h1>Planning Steps</h1>
+  <p class="subtitle"></p>
+
+  <div class="toolbar">
+    <div class="card control-card">
+      <div class="label">demo question</div>
+      <select id="scenarioSelect"></select>
+      <div class="pills" id="scenarioTags"></div>
+    </div>
+    <div class="card control-card">
+      <div class="label">selected question</div>
+      <div class="question" id="questionText"></div>
+    </div>
+  </div>
+
+  <div class="card pipeline-card">
+    <div class="pipeline-title">new structure pipeline</div>
+    <div class="pipeline-groups">
+      <div class="group-label" style="grid-column:1"><!-- input --></div>
+      <div class="group-label routing" style="grid-column:2">Source Routing</div>
+      <div class="group-label planner" style="grid-column:3/8">Planner</div>
+      <div class="group-label exec" style="grid-column:8/10">Execute</div>
+      <div class="group-label" style="grid-column:10"><!-- output --></div>
+    </div>
+    <div class="pipeline" id="pipeline"></div>
+  </div>
+
+  <div class="layout">
+    <main class="card main-card">
+      <div id="stages"></div>
+    </main>
+    <aside class="card side-card">
+      <div class="side-title">step map</div>
+      <div class="side-list" id="sideList"></div>
+    </aside>
+  </div>
+</div>
+
+<div class="nav">
+  <button class="btn btn-prev" id="prevBtn">Prev</button>
+  <div class="counter" id="counter"></div>
+  <button class="btn btn-next" id="nextBtn">Next</button>
+</div>
+
+<script>
+const pipelineNodes = [
+  ["question", "Start", "Question", "raw request", "start"],
+  ["source", "Step 1", "Source Intent", "score every source", "process"],
+  ["slots", "Step 2", "Intent Extraction", "metric, filters, date, group", "process"],
+  ["decision", "Decision", "Deterministic OK?", "confident + valid?", "decision"],
+  ["det", "Yes", "Deterministic", "rules + config, no LLM", "fast"],
+  ["llm", "No", "LLM Extraction", "LLM fills intent, no query", "llm"],
+  ["plan", "Step 3", "Plan Builder", "shared canonical plan", "process"],
+  ["validate", "Step 4", "Validation + Repair", "repair, picker fallback, validate", "decision"],
+  ["execute", "Step 5", "Execution", "Elasticsearch query", "process"],
+  ["answer", "End", "Answer", "narration", "answer"]
+];
+
+const demos = [
+  {
+    id: "movement_location",
+    label: "movement count by patient (locations)",
+    question: "movement count by patient for ward 2V last week",
+    tags: ["locations", "deterministic", "fast"],
+    activePath: ["question", "source", "slots", "decision", "det", "plan", "validate", "execute", "answer"],
+    steps: [
+      {
+        node: "question",
+        title: "User Question",
+        role: "plain language in, nothing decided yet",
+        desc: "The user asks for movement count, grouped by patient, filtered to ward 2V, over last week.",
+        kind: "prose",
+        outputLabel: "input",
+        output: "movement count by patient for ward 2V last week"
+      },
+      {
+        node: "source",
+        title: "Source Intent Resolution",
+        role: "score the raw question against every source's own config",
+        desc: "",
+        kind: "scoring",
+        outputLabel: "how the score is built",
+        weightTable: {
+          headers: ["What matched", "Category", "Weight"],
+          rows: [
+            ["metric name or synonym", "metric", "+9.0"],
+            ["table name or synonym", "table", "+8.0"],
+            ["dimension name or synonym", "dimension", "+2.0"],
+            ["partial phrase overlap (≥75%)", "any", "weight × 0.45"],
+            ["partial phrase overlap (≥50%, 3+ words)", "any", "weight × 0.25"]
+          ]
+        },
+        scoreTable: {
+          headers: ["Source", "Phrase hit", "Category", "Score"],
+          rows: [
+            ["locations", "movement_event_count", "metric", "+9.0"],
+            ["calls", "ward", "dimension", "+2.0"],
+            ["calls", "patient → person_name", "dimension", "+2.0"],
+            ["workflows", "(no match)", "—", "+0.0"]
+          ],
+          totals: [
+            ["locations", "9.0", "✓ selected (margin = 7.0)"],
+            ["calls", "4.0", ""],
+            ["workflows", "0.0", ""]
+          ],
+          totalsHeaders: ["Source", "Total score", "Decision"]
+        }
+      },
+      {
+        node: "slots",
+        title: "Intent Extraction (deterministic)",
+        role: "extract metric, filters, grouping, and date from the question",
+        desc: "",
+        kind: "code",
+        outputLabel: "extracted intent",
+        output: `{
+  "extraction_path": "deterministic_slots",
+  "source_id": "locations",
+  "metric": "movement_event_count",
+  "aggregation": "cardinality",
+  "group_by": ["personFirstName"],
+  "filters": [
+    { "field": "ward", "op": "in",
+      "value": ["2V ZONE 2A", "2V ZONE 2B"] }
+  ],
+  "date_rule": "last_7_days",
+  "confidence": 0.9
+}`
+      },
+      {
+        node: "decision",
+        title: "Deterministic OK?",
+        role: "decide whether the deterministic extraction is enough",
+        desc: "",
+        kind: "table",
+        outputLabel: "gate checks",
+        headers: ["Check", "Result"],
+        rows: [
+          ["Single metric resolved", "yes"],
+          ["raw_records metric", "no"],
+          ["Multi-metric / % change", "no"],
+          ["LLM extraction", "not needed"],
+          ["Path", "Deterministic slots"]
+        ]
+      },
+      {
+        node: "det",
+        title: "Deterministic Extraction Accepted",
+        role: "no LLM call on this path",
+        desc: "",
+        kind: "code",
+        outputLabel: "handoff",
+        output: `{
+  "extraction_path": "deterministic_slots",
+  "llm_used": false,
+  "next": "shared plan builder"
+}`
+      },
+      {
+        node: "plan",
+        title: "Plan Builder (shared)",
+        role: "convert extracted intent to a canonical plan",
+        desc: "",
+        kind: "code",
+        outputLabel: "canonical plan",
+        output: `{
+  "target_tables": ["historyLocations"],
+  "metric": "movement_event_count",
+  "aggregation": "cardinality",
+  "group_by": ["personFirstName"],
+  "filters": [
+    { "field": "ward", "op": "in",
+      "value": ["2V ZONE 2A", "2V ZONE 2B"] }
+  ],
+  "date_rule": "last_7_days"
+}`
+      },
+      {
+        node: "validate",
+        title: "Validation + Repair (shared 04_validator)",
+        role: "repair, picker date/time fallback, then validate",
+        desc: "",
+        kind: "code",
+        outputLabel: "validation result",
+        output: `{
+  "valid": true,
+  "blocking_errors": [],
+  "target_table": "historyLocations"
+}`
+      },
+      {
+        node: "execute",
+        title: "Execution",
+        role: "query the correct Elasticsearch index",
+        desc: "",
+        kind: "table",
+        outputLabel: "execution target",
+        headers: ["Item", "Value"],
+        rows: [
+          ["Canonical table", "historyLocations"],
+          ["Elasticsearch index", "televic.history.location"],
+          ["Metric field", "episode_id cardinality"],
+          ["Output", "movement counts by patient"]
+        ]
+      },
+      {
+        node: "answer",
+        title: "Final Answer",
+        role: "narration on top of a confirmed result",
+        desc: "",
+        kind: "answer",
+        output: "Last week in ward 2V, movement events were counted per patient from the location history data."
+      }
+    ]
+  },
+  {
+    id: "simple_calls",
+    label: "simple call count (calls)",
+    question: "How many calls last week?",
+    tags: ["calls", "deterministic", "fast"],
+    activePath: ["question", "source", "slots", "decision", "det", "plan", "validate", "execute", "answer"],
+    steps: [
+      {
+        node: "question",
+        title: "User Question",
+        role: "simple scalar aggregation",
+        desc: "",
+        kind: "prose",
+        outputLabel: "input",
+        output: "How many calls last week?"
+      },
+      {
+        node: "source",
+        title: "Source Intent Resolution",
+        role: "the call event source is clear",
+        desc: "",
+        kind: "scoring",
+        outputLabel: "how the score is built",
+        weightTable: {
+          headers: ["What matched", "Category", "Weight"],
+          rows: [
+            ["metric name or synonym", "metric", "+9.0"],
+            ["table name or synonym", "table", "+8.0"],
+            ["dimension name or synonym", "dimension", "+2.0"]
+          ]
+        },
+        scoreTable: {
+          headers: ["Source", "Phrase hit", "Category", "Score"],
+          rows: [
+            ["calls", "calls", "metric + table", "+17.0"],
+            ["locations", "(no match)", "—", "+0.0"],
+            ["workflows", "(no match)", "—", "+0.0"]
+          ],
+          totals: [
+            ["calls", "17.0", "✓ selected (no change)"],
+            ["locations", "0.0", ""],
+            ["workflows", "0.0", ""]
+          ],
+          totalsHeaders: ["Source", "Total score", "Decision"]
+        }
+      },
+      {
+        node: "slots",
+        title: "Intent Extraction (deterministic)",
+        role: "metric and date are enough",
+        desc: "",
+        kind: "code",
+        outputLabel: "extracted intent",
+        output: `{
+  "extraction_path": "deterministic_slots",
+  "metric": "total_calls",
+  "aggregation": "count",
+  "group_by": [],
+  "date_rule": "last_7_days",
+  "confidence": 0.78
+}`
+      },
+      {
+        node: "decision",
+        title: "Deterministic OK?",
+        role: "simple enough to skip the LLM",
+        desc: "",
+        kind: "bars",
+        outputLabel: "intent extraction latency",
+        bars: [
+          { label: "Deterministic", value: "<0.1s", pct: 5, type: "fast" },
+          { label: "LLM", value: "5-10s", pct: 90, type: "llm" }
+        ]
+      },
+      {
+        node: "det",
+        title: "Deterministic Extraction Accepted",
+        role: "no LLM call on this path",
+        desc: "",
+        kind: "code",
+        outputLabel: "handoff",
+        output: `{
+  "extraction_path": "deterministic_slots",
+  "llm_used": false
+}`
+      },
+      {
+        node: "plan",
+        title: "Plan Builder (shared)",
+        role: "build from slots, metric catalog, and date rules",
+        desc: "",
+        kind: "code",
+        outputLabel: "canonical plan",
+        output: `{
+  "target_tables": ["historyCalls"],
+  "metric": "total_calls",
+  "aggregation": "count",
+  "date_rule": "last_7_days"
+}`
+      },
+      {
+        node: "validate",
+        title: "Validation + Repair (shared 04_validator)",
+        role: "picker date fallback if needed, then validate",
+        desc: "",
+        kind: "code",
+        outputLabel: "validation result",
+        output: `{
+  "valid": true,
+  "repairs": []
+}`
+      },
+      {
+        node: "execute",
+        title: "Execution",
+        role: "count call records",
+        desc: "",
+        kind: "table",
+        outputLabel: "execution result",
+        headers: ["Field", "Value"],
+        rows: [
+          ["Table", "historyCalls"],
+          ["Index", "televic.history.call"],
+          ["Result", "1 scalar count"]
+        ]
+      },
+      {
+        node: "answer",
+        title: "Final Answer",
+        role: "short scalar answer",
+        desc: "",
+        kind: "answer",
+        output: "There were 1,249 calls last week."
+      }
+    ]
+  },
+  {
+    id: "workflow_presence",
+    label: "workflow presence (workflows)",
+    question: "Nurse presence by ward this week",
+    tags: ["workflows", "deterministic", "fast"],
+    activePath: ["question", "source", "slots", "decision", "det", "plan", "validate", "execute", "answer"],
+    steps: [
+      {
+        node: "question",
+        title: "User Question",
+        role: "workflow-domain aggregation",
+        desc: "",
+        kind: "prose",
+        outputLabel: "input",
+        output: "Nurse presence by ward this week"
+      },
+      {
+        node: "source",
+        title: "Source Intent Resolution",
+        role: "presence points to workflow data",
+        desc: "",
+        kind: "scoring",
+        outputLabel: "how the score is built",
+        weightTable: {
+          headers: ["What matched", "Category", "Weight"],
+          rows: [
+            ["metric name or synonym", "metric", "+9.0"],
+            ["table name or synonym", "table", "+8.0"],
+            ["dimension name or synonym", "dimension", "+2.0"]
+          ]
+        },
+        scoreTable: {
+          headers: ["Source", "Phrase hit", "Category", "Score"],
+          rows: [
+            ["workflows", "presence_event_count", "metric", "+9.0"],
+            ["workflows", "nurse → initiator_person", "dimension", "+2.0"],
+            ["calls", "ward → ward_name", "dimension", "+2.0"],
+            ["locations", "(no match)", "—", "+0.0"]
+          ],
+          totals: [
+            ["workflows", "11.0", "✓ selected (margin = 9.0)"],
+            ["calls", "2.0", ""],
+            ["locations", "0.0", ""]
+          ],
+          totalsHeaders: ["Source", "Total score", "Decision"]
+        }
+      },
+      {
+        node: "slots",
+        title: "Intent Extraction (deterministic)",
+        role: "map words to workflow fields using config",
+        desc: "",
+        kind: "code",
+        outputLabel: "extracted intent",
+        output: `{
+  "extraction_path": "deterministic_slots",
+  "metric": "presence_event_count",
+  "group_by": ["ward_name"],
+  "date_rule": "this_week"
+}`
+      },
+      {
+        node: "decision",
+        title: "Deterministic OK?",
+        role: "clear grouped aggregation",
+        desc: "",
+        kind: "table",
+        outputLabel: "gate checks",
+        headers: ["Check", "Result"],
+        rows: [
+          ["One metric", "yes"],
+          ["One group_by", "ward_name"],
+          ["Special workflow logic", "no"],
+          ["LLM extraction", "not needed"],
+          ["Path", "Deterministic slots"]
+        ]
+      },
+      {
+        node: "det",
+        title: "Deterministic Slots Accepted",
+        role: "no LLM call on this path",
+        desc: "",
+        kind: "code",
+        outputLabel: "handoff",
+        output: `{
+  "extraction_path": "deterministic_slots",
+  "llm_used": false
+}`
+      },
+      {
+        node: "plan",
+        title: "Plan Builder (shared)",
+        role: "build the canonical plan from workflow slots",
+        desc: "",
+        kind: "code",
+        outputLabel: "canonical plan",
+        output: `{
+  "target_tables": ["historyWorkflows"],
+  "metric": "presence_event_count",
+  "aggregation": "count",
+  "group_by": ["ward_name"],
+  "date_rule": "this_week"
+}`
+      },
+      {
+        node: "validate",
+        title: "Validation + Repair (shared 04_validator)",
+        role: "workflow repairs + picker fallback, then validate",
+        desc: "",
+        kind: "code",
+        outputLabel: "validation result",
+        output: `{
+  "valid": true,
+  "target_table": "historyWorkflows"
+}`
+      },
+      {
+        node: "execute",
+        title: "Execution",
+        role: "query the workflow index",
+        desc: "",
+        kind: "table",
+        outputLabel: "execution target",
+        headers: ["Item", "Value"],
+        rows: [
+          ["Table", "historyWorkflows"],
+          ["Index", "televic.history.workflow"],
+          ["Output", "presence counts by ward"]
+        ]
+      },
+      {
+        node: "answer",
+        title: "Final Answer",
+        role: "workflow-grounded answer",
+        desc: "",
+        kind: "answer",
+        output: "Nurse presence events are grouped by ward for this week."
+      }
+    ]
+  },
+  {
+    id: "complex_llm",
+    label: "percent-change ranking (LLM extraction)",
+    question: "Which ward had the biggest percentage increase in calls from January to February?",
+    tags: ["calls", "LLM extraction", "comparison"],
+    activePath: ["question", "source", "slots", "decision", "llm", "plan", "validate", "execute", "answer"],
+    steps: [
+      {
+        node: "question",
+        title: "User Question",
+        role: "period comparison plus a percentage-change ranking",
+        desc: "",
+        kind: "prose",
+        outputLabel: "input",
+        output: "Which ward had the biggest percentage increase in calls from January to February?"
+      },
+      {
+        node: "source",
+        title: "Source Intent Resolution",
+        role: "call metrics point to calls",
+        desc: "'calls' and 'response time' are both metric-level phrases in the calls config, giving a high combined score. The calls source is confirmed.",
+        kind: "scoring",
+        outputLabel: "how the score is built",
+        weightTable: {
+          headers: ["What matched", "Category", "Weight"],
+          rows: [
+            ["metric name or synonym", "metric", "+9.0"],
+            ["table name or synonym", "table", "+8.0"],
+            ["dimension name or synonym", "dimension", "+2.0"]
+          ]
+        },
+        scoreTable: {
+          headers: ["Source", "Phrase hit", "Category", "Score"],
+          rows: [
+            ["calls", "calls", "metric + table", "+17.0"],
+            ["calls", "response time → avg_response_time", "metric", "+9.0"],
+            ["locations", "(no match)", "—", "+0.0"],
+            ["workflows", "(no match)", "—", "+0.0"]
+          ],
+          totals: [
+            ["calls", "26.0", "✓ selected (margin = 26.0)"],
+            ["locations", "0.0", ""],
+            ["workflows", "0.0", ""]
+          ],
+          totalsHeaders: ["Source", "Total score", "Decision"]
+        }
+      },
+      {
+        node: "slots",
+        title: "Intent Extraction (deterministic attempt)",
+        role: "rules-based extraction runs first, but flags a complex shape",
+        desc: "",
+        kind: "code",
+        outputLabel: "extracted intent (partial)",
+        output: `{
+  "extraction_path": "deterministic_slots",
+  "metric": "total_calls",
+  "comparison": { "comparison_type": "period",
+                  "reason": "front_loaded_compare_and" },
+  "note": "percent-change ranking not handled deterministically"
+}`
+      },
+      {
+        node: "decision",
+        title: "Deterministic OK?",
+        role: "escalate to LLM intent extraction",
+        desc: "",
+        kind: "table",
+        outputLabel: "gate checks",
+        headers: ["Check", "Result"],
+        rows: [
+          ["Single metric", "yes (total_calls)"],
+          ["Percentage-change wording", "detected"],
+          ["Escalate to LLM extraction", "yes"],
+          ["Path", "LLM intent extraction"]
+        ]
+      },
+      {
+        node: "llm",
+        title: "LLM Intent Extraction",
+        role: "LLM extracts intent only, never writes a query",
+        desc: "",
+        kind: "code",
+        outputLabel: "LLM extracted intent",
+        output: `{
+  "extraction_path": "llm_slots",
+  "metric": "total_calls",
+  "metric_params": { "calculation": "percentage_change" },
+  "group_by": ["ward_name"],
+  "date_range": { "start_date": "2024-02-01",
+                  "end_date": "2024-02-29" },
+  "comparison": { "type": "period",
+    "compare_to": { "date_range": {
+      "start_date": "2024-01-01",
+      "end_date": "2024-01-31" } } },
+  "ranking": { "detected": true, "field": "percent_change",
+               "direction": "desc", "limit": 1 }
+}`
+      },
+      {
+        node: "plan",
+        title: "Plan Builder (shared)",
+        role: "same builder converts LLM-extracted intent to a canonical plan",
+        desc: "",
+        kind: "code",
+        outputLabel: "canonical plan",
+        output: `{
+  "target_tables": ["historyCalls"],
+  "metric": "total_calls",
+  "group_by": ["ward_name"],
+  "date_range": { "start_date": "2024-02-01",
+                  "end_date": "2024-02-29" },
+  "compare_to": { "date_range": {
+    "start_date": "2024-01-01",
+    "end_date": "2024-01-31" } },
+  "_post_compare_ranking": { "field": "percent_change",
+    "direction": "desc", "limit": 1 }
+}`
+      },
+      {
+        node: "validate",
+        title: "Validation + Repair (shared 04_validator)",
+        role: "same gate, no special LLM path",
+        desc: "",
+        kind: "code",
+        outputLabel: "validation result",
+        output: `{
+  "valid": true,
+  "blocking_errors": [],
+  "target_table": "historyCalls"
+}`
+      },
+      {
+        node: "execute",
+        title: "Execution",
+        role: "run both windows, then rank in Python",
+        desc: "",
+        kind: "table",
+        outputLabel: "execution steps",
+        headers: ["Step", "Value"],
+        rows: [
+          ["Main window", "Feb 2024 calls by ward"],
+          ["Compare window", "Jan 2024 calls by ward"],
+          ["Post step", "percent_change per ward"],
+          ["Rank", "top 1 by percent_change desc"]
+        ]
+      },
+      {
+        node: "answer",
+        title: "Final Answer",
+        role: "grounded answer from a validated plan",
+        desc: "",
+        kind: "answer",
+        output: "Ward 2V had the largest month-over-month percentage increase in calls from January to February."
+      }
+    ]
+  },
+  {
+    id: "last_location",
+    label: "last known location (simple lookup)",
+    question: "Where was patient 3f9a… last seen?",
+    tags: ["locations", "simple lookup", "raw records"],
+    activePath: ["question", "source", "slots", "decision", "det", "plan", "validate", "execute", "answer"],
+    steps: [
+      {
+        node: "question",
+        title: "User Question",
+        role: "record lookup, not an aggregation",
+        desc: "",
+        kind: "prose",
+        outputLabel: "input",
+        output: "Where was patient 3f9a… last seen?"
+      },
+      {
+        node: "source",
+        title: "Source Intent Resolution",
+        role: "last-seen location points to the locations source",
+        desc: "",
+        kind: "scoring",
+        outputLabel: "how the score is built",
+        weightTable: {
+          headers: ["What matched", "Category", "Weight"],
+          rows: [
+            ["metric name or synonym", "metric", "+9.0"],
+            ["table name or synonym", "table", "+8.0"],
+            ["dimension name or synonym", "dimension", "+2.0"]
+          ]
+        },
+        scoreTable: {
+          headers: ["Source", "Phrase hit", "Category", "Score"],
+          rows: [
+            ["locations", "last seen → last_known_location", "metric", "+9.0"],
+            ["locations", "patient → person", "dimension", "+2.0"],
+            ["calls", "(no match)", "—", "+0.0"],
+            ["workflows", "(no match)", "—", "+0.0"]
+          ],
+          totals: [
+            ["locations", "11.0", "✓ selected (margin = 11.0)"],
+            ["calls", "0.0", ""],
+            ["workflows", "0.0", ""]
+          ],
+          totalsHeaders: ["Source", "Total score", "Decision"]
+        }
+      },
+      {
+        node: "slots",
+        title: "Intent Extraction (deterministic attempt)",
+        role: "slot extraction bails on a raw_records metric",
+        desc: "",
+        kind: "code",
+        outputLabel: "extracted intent (rejected)",
+        output: `{
+  "used": false,
+  "reason": "raw_metric_not_slot_planned:last_known_location"
+}`
+      },
+      {
+        node: "decision",
+        title: "Deterministic OK?",
+        role: "raw_records can't be aggregated → simple lookup builder",
+        desc: "",
+        kind: "table",
+        outputLabel: "gate checks",
+        headers: ["Check", "Result"],
+        rows: [
+          ["raw_records metric", "yes (last_known_location)"],
+          ["Slot aggregation", "not applicable"],
+          ["Route to simple_lookup builder", "yes"],
+          ["LLM extraction", "not needed"]
+        ]
+      },
+      {
+        node: "det",
+        title: "Simple Lookup Builder",
+        role: "deterministic filter + raw fetch (07_simple_lookup)",
+        desc: "",
+        kind: "code",
+        outputLabel: "lookup intent",
+        output: `{
+  "metric": "last_known_location",
+  "aggregation": "raw_records",
+  "filters": [
+    { "field": "personId", "op": "=",
+      "value": "3f9a…" }
+  ],
+  "order_by": { "field": "timestamp", "direction": "desc" },
+  "limit": 1
+}`
+      },
+      {
+        node: "plan",
+        title: "Plan Builder (shared)",
+        role: "wrap the lookup into a canonical plan",
+        desc: "",
+        kind: "code",
+        outputLabel: "canonical plan",
+        output: `{
+  "target_tables": ["historyLocations"],
+  "metric": "last_known_location",
+  "aggregation": "raw_records",
+  "filters": [
+    { "field": "personId", "op": "=",
+      "value": "3f9a…" }
+  ],
+  "limit": 1
+}`
+      },
+      {
+        node: "validate",
+        title: "Validation + Repair (shared 04_validator)",
+        role: "location repairs; date fallback guarded off, then validate",
+        desc: "",
+        kind: "code",
+        outputLabel: "validation result",
+        output: `{
+  "valid": true,
+  "target_table": "historyLocations"
+}`
+      },
+      {
+        node: "execute",
+        title: "Execution",
+        role: "fetch the single most recent record",
+        desc: "",
+        kind: "table",
+        outputLabel: "execution target",
+        headers: ["Item", "Value"],
+        rows: [
+          ["Table", "historyLocations"],
+          ["Index", "televic.history.location"],
+          ["Output", "1 most-recent location record"]
+        ]
+      },
+      {
+        node: "answer",
+        title: "Final Answer",
+        role: "table-first answer from the raw record",
+        desc: "",
+        kind: "answer",
+        output: "The patient was last seen in ward 2V (ZONE 2A) on the most recent location record."
+      }
+    ]
+  }
+];
+
+const select = document.querySelector("#scenarioSelect");
+const tags = document.querySelector("#scenarioTags");
+const questionText = document.querySelector("#questionText");
+const pipeline = document.querySelector("#pipeline");
+const stages = document.querySelector("#stages");
+const sideList = document.querySelector("#sideList");
+const prevBtn = document.querySelector("#prevBtn");
+const nextBtn = document.querySelector("#nextBtn");
+const counter = document.querySelector("#counter");
+
+let currentDemo = demos[0];
+let currentStep = 0;
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function renderOutput(step) {
+  if (step.kind === "code") {
+    return `<pre class="code">${escapeHtml(step.output)}</pre>`;
+  }
+  if (step.kind === "prose") {
+    return `<div class="prose">${escapeHtml(step.output)}</div>`;
+  }
+  if (step.kind === "answer") {
+    return `<div class="answer-card"><div class="answer-head">Grounded answer</div><div class="answer-text">${escapeHtml(step.output)}</div></div>`;
+  }
+  if (step.kind === "table") {
+    const headers = step.headers.map(h => `<th>${escapeHtml(h)}</th>`).join("");
+    const rows = step.rows.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("");
+    return `<div class="table-wrap"><table><thead><tr>${headers}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  }
+  if (step.kind === "bars") {
+    const bars = step.bars.map(bar => `
+      <div class="bar-row">
+        <div class="bar-label">${escapeHtml(bar.label)}</div>
+        <div class="bar-track"><div class="bar-fill ${bar.type}" data-pct="${bar.pct}"></div></div>
+        <div class="bar-value">${escapeHtml(bar.value)}</div>
+      </div>
+    `).join("");
+    return `<div class="bars">${bars}</div>`;
+  }
+  if (step.kind === "scoring") {
+    const wt = step.weightTable;
+    const wtHeaders = wt.headers.map(h => `<th>${escapeHtml(h)}</th>`).join("");
+    const wtRows = wt.rows.map(row => `<tr>${row.map(c => `<td>${escapeHtml(c)}</td>`).join("")}</tr>`).join("");
+    const st = step.scoreTable;
+    const stHeaders = st.headers.map(h => `<th>${escapeHtml(h)}</th>`).join("");
+    const stRows = st.rows.map(row => `<tr>${row.map(c => `<td>${escapeHtml(c)}</td>`).join("")}</tr>`).join("");
+    const totHeaders = st.totalsHeaders.map(h => `<th>${escapeHtml(h)}</th>`).join("");
+    const totRows = st.totals.map((row, i) => {
+      const highlight = i === 0 ? ' style="background:#ebfaef;font-weight:900;"' : '';
+      return `<tr${highlight}>${row.map(c => `<td>${escapeHtml(c)}</td>`).join("")}</tr>`;
+    }).join("");
+    return `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div>
+          <div class="output-label" style="margin-bottom:6px">scoring weights (from config)</div>
+          <div class="table-wrap"><table><thead><tr>${wtHeaders}</tr></thead><tbody>${wtRows}</tbody></table></div>
+        </div>
+        <div>
+          <div class="output-label" style="margin-bottom:6px">phrase hits for this question</div>
+          <div class="table-wrap"><table><thead><tr>${stHeaders}</tr></thead><tbody>${stRows}</tbody></table></div>
+          <div style="margin-top:10px">
+          <div class="table-wrap"><table><thead><tr>${totHeaders}</tr></thead><tbody>${totRows}</tbody></table></div>
+          </div>
+        </div>
+      </div>`;
+  }
+  if (step.kind === "compare") {
+    return `
+      <div class="compare-box">
+        <div class="compare-col">
+          <div class="compare-heading old">${escapeHtml(step.oldTitle)}</div>
+          <pre class="code">${escapeHtml(step.oldCode)}</pre>
+        </div>
+        <div class="compare-col">
+          <div class="compare-heading new">${escapeHtml(step.newTitle)}</div>
+          <pre class="code">${escapeHtml(step.newCode)}</pre>
+        </div>
+      </div>
+    `;
+  }
+  return "";
+}
+
+function renderPipeline() {
+  const path = new Set(currentDemo.activePath);
+  pipeline.innerHTML = pipelineNodes.map(node => {
+    const [id, kicker, name, note, type] = node;
+    const plannerNodes = new Set(["slots", "decision", "det", "llm", "plan"]);
+    const routingNodes = new Set(["source"]);
+    const execNodes   = new Set(["validate", "execute"]);
+    const classes = ["node"];
+    if (type === "start") classes.push("start");
+    if (type === "answer") classes.push("answer");
+    if (type === "decision") classes.push("decision");
+    if (type === "fast") classes.push("fast-path");
+    if (type === "llm") classes.push("llm-path");
+    if (!path.has(id) && (id === "det" || id === "llm")) classes.push("fail-path");
+    if (plannerNodes.has(id)) classes.push("in-planner");
+    else if (routingNodes.has(id)) classes.push("in-routing");
+    else if (execNodes.has(id)) classes.push("in-exec");
+    if (currentDemo.steps[currentStep]?.node === id) classes.push("active");
+    return `
+      <div class="${classes.join(" ")}" data-node="${id}">
+        <div class="node-kicker">${escapeHtml(kicker)}</div>
+        <div class="node-name">${escapeHtml(name)}</div>
+        <div class="node-note">${escapeHtml(note)}</div>
+      </div>
+    `;
+  }).join("");
+  pipeline.querySelectorAll(".node").forEach(el => {
+    el.addEventListener("click", () => {
+      const nodeId = el.dataset.node;
+      const idx = currentDemo.steps.findIndex(step => step.node === nodeId);
+      if (idx >= 0) setStep(idx);
+    });
+  });
+}
+
+function renderStages() {
+  stages.innerHTML = currentDemo.steps.map((step, index) => `
+    <section class="stage ${index === currentStep ? "active" : ""}">
+      <div class="stage-head">
+        <div class="num">${index + 1}</div>
+        <div>
+          <div class="stage-title">${escapeHtml(step.title)}</div>
+          <div class="stage-role">${escapeHtml(step.role)}</div>
+        </div>
+      </div>
+      <div class="desc">${escapeHtml(step.desc)}</div>
+      <div class="output-label">${escapeHtml(step.outputLabel || "output")}</div>
+      ${renderOutput(step)}
+    </section>
+  `).join("");
+  requestAnimationFrame(() => {
+    document.querySelectorAll(".bar-fill").forEach(fill => {
+      fill.style.width = `${fill.dataset.pct}%`;
+    });
+  });
+}
+
+function renderSideList() {
+  sideList.innerHTML = currentDemo.steps.map((step, index) => `
+    <div class="side-item ${index === currentStep ? "active" : ""}" data-index="${index}">
+      <div class="side-step">Step ${index + 1}</div>
+      <div class="side-name">${escapeHtml(step.title)}</div>
+      <div class="side-note">${escapeHtml(step.role)}</div>
+    </div>
+  `).join("");
+  sideList.querySelectorAll(".side-item").forEach(item => {
+    item.addEventListener("click", () => setStep(Number(item.dataset.index)));
+  });
+}
+
+function setStep(index) {
+  currentStep = Math.max(0, Math.min(index, currentDemo.steps.length - 1));
+  renderPipeline();
+  renderStages();
+  renderSideList();
+  prevBtn.disabled = currentStep === 0;
+  nextBtn.disabled = currentStep === currentDemo.steps.length - 1;
+  counter.textContent = `${currentStep + 1} / ${currentDemo.steps.length}`;
+}
+
+function setDemo(id) {
+  currentDemo = demos.find(d => d.id === id) || demos[0];
+  currentStep = 0;
+  questionText.textContent = currentDemo.question;
+  tags.innerHTML = currentDemo.tags.map(tag => {
+    const cls = tag.includes("fast") ? "fast" : tag.includes("LLM") ? "llm" : tag.includes("locations") || tag.includes("workflows") ? "source" : "";
+    return `<span class="pill ${cls}">${escapeHtml(tag)}</span>`;
+  }).join("");
+  setStep(0);
+}
+
+demos.forEach(demo => {
+  const option = document.createElement("option");
+  option.value = demo.id;
+  option.textContent = demo.label;
+  select.appendChild(option);
+});
+
+select.addEventListener("change", event => setDemo(event.target.value));
+prevBtn.addEventListener("click", () => setStep(currentStep - 1));
+nextBtn.addEventListener("click", () => setStep(currentStep + 1));
+
+setDemo(demos[0].id);
+</script>
+</body>
+</html>
