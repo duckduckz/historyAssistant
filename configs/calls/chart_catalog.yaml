@@ -1,0 +1,803 @@
+schema_version: 2
+
+policy:
+  enabled: true
+  active_table: historyCalls
+  default_chart_type: line
+  max_group_by_fields: 2
+
+  allowed_chart_types:
+    - line
+    - bar
+    - horizontal_bar
+    - stacked_bar
+    - area
+    - pie
+    - scatter
+    - histogram
+    - dot_plot
+
+  output:
+    save_dir: outputs/charts/
+    image_format: png
+    dpi: 150
+
+chart_types:
+  line:
+    description: Best for time trends and ordered comparisons.
+    requires:
+      x_axis: dimension_or_time
+      y_axis: metric
+    supports_series: true
+    preferred_x_roles:
+      - time
+      - ordered_category
+
+  bar:
+    description: Best for comparing values across categories.
+    requires:
+      x_axis: dimension_or_time
+      y_axis: metric
+    supports_series: true
+    preferred_x_roles:
+      - categorical
+      - ordered_category
+      - time
+
+  horizontal_bar:
+    description: Best for ranked comparisons such as top or bottom categories.
+    requires:
+      x_axis: metric
+      y_axis: single_categorical_dimension
+    supports_series: false
+    preferred_x_roles:
+      - categorical
+      - ordered_category
+
+  stacked_bar:
+    description: Best for comparison with a second breakdown category.
+    requires:
+      x_axis: dimension_or_time
+      y_axis: metric
+    supports_series: true
+    preferred_x_roles:
+      - categorical
+      - ordered_category
+      - time
+
+  area:
+    description: Best for time trend magnitude and stacked trend views.
+    requires:
+      x_axis: dimension_or_time
+      y_axis: metric
+    supports_series: true
+    preferred_x_roles:
+      - time
+
+  pie:
+    description: Best for composition across a small number of categories.
+    requires:
+      x_axis: single_categorical_dimension
+      y_axis: metric
+    supports_series: false
+    max_categories_recommended: 6
+
+  scatter:
+    description: Best for showing individual data points per category or over time. Works with date, ordered, or numeric x-axis.
+    requires:
+      x_axis: dimension_or_time
+      y_axis: metric
+    supports_series: true
+    notes:
+      - Use a categorical series only when low-cardinality.
+
+  histogram:
+    description: Best for showing distribution of a metric across ordered numeric or time-based bins such as call hour or day of week.
+    requires:
+      x_axis: ordered_numeric_or_time_dimension
+      y_axis: metric
+    supports_series: false
+    preferred_x_roles:
+      - ordered_category
+      - time
+
+  dot_plot:
+    description: Best for comparing individual metric values per category with a clean minimal look. Good alternative to bar when there are many categories.
+    requires:
+      x_axis: dimension_or_time
+      y_axis: metric
+    supports_series: false
+    preferred_x_roles:
+      - categorical
+      - ordered_category
+
+dimensions:
+  call_date:
+    label: Call date
+    role: time
+    allowed_chart_types:
+      - line
+      - bar
+      - stacked_bar
+      - area
+      - scatter
+      - histogram
+    allowed_axis_slots:
+      - x
+      - series
+
+  call_dayofweek:
+    label: Day of week
+    role: ordered_category
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - histogram
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - series
+
+  call_hour:
+    label: Call hour
+    role: ordered_category
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - histogram
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - series
+
+  ward_name:
+    label: Ward
+    role: categorical
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+  zone_name:
+    label: Zone
+    role: categorical
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+  area_name:
+    label: Area
+    role: categorical
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+  shift:
+    label: Shift
+    role: categorical
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+  call_type:
+    label: Call type
+    role: categorical
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+  priority:
+    label: Priority
+    role: ordered_category
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+      - histogram
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+  person_type:
+    label: Person type
+    role: categorical
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+  is_cancelled:
+    label: Call closed by staff (cancel button pressed)
+    role: categorical
+    allowed_chart_types:
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - pie
+      - dot_plot
+    allowed_axis_slots:
+      - x
+      - y
+      - series
+
+numeric_fields:
+  response_time_sec:
+    label: Response time (sec)
+    allowed_chart_types:
+      - scatter
+
+  staying_time_sec:
+    label: Staying time (sec)
+    allowed_chart_types:
+      - scatter
+
+  staying_time_min:
+    label: Staying time (min)
+    allowed_chart_types:
+      - scatter
+
+metrics:
+  total_calls:
+    label: Total calls
+    unit: calls
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - histogram
+      - dot_plot
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+      - is_cancelled
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+      - is_cancelled
+
+  avg_response_time:
+    label: Average response time
+    unit: seconds
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  avg_staying_time:
+    label: Average staying time
+    unit: minutes
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  median_response_time:
+    label: Median response time
+    unit: seconds
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  median_staying_time:
+    label: Median staying time
+    unit: seconds
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  p75_response_time:
+    label: P75 response time
+    unit: seconds
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  p90_response_time:
+    label: P90 response time
+    unit: seconds
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  p90_staying_time:
+    label: P90 staying time
+    unit: seconds
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  p95_staying_time:
+    label: P95 staying time
+    unit: seconds
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - scatter
+      - dot_plot
+      - histogram
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  response_within_2_min_rate:
+    label: Response within 2 min rate
+    unit: percent
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  response_within_3_min_rate:
+    label: Response within 3 min rate
+    unit: percent
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  response_over_5_min_rate:
+    label: Response over 5 min rate
+    unit: percent
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  response_time_threshold_rate:
+    label: Response time threshold rate
+    unit: percent
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  response_time_threshold_count:
+    label: Response time threshold count
+    unit: calls
+    allowed_chart_types:
+      - line
+      - bar
+      - horizontal_bar
+      - stacked_bar
+      - area
+      - pie
+      - scatter
+      - dot_plot
+    recommended_dimensions:
+      - call_date
+      - call_dayofweek
+      - call_hour
+      - ward_name
+      - zone_name
+      - area_name
+      - shift
+      - call_type
+      - priority
+      - person_type
+    allowed_series:
+      - shift
+      - priority
+      - call_type
+      - ward_name
+
+  avg_calls_per_shift:
+    label: Average calls per shift
+    unit: calls_per_shift
+    allowed_chart_types:
+      - bar
+      - horizontal_bar
+      - line
+      - dot_plot
+    recommended_dimensions:
+      - shift
+      - call_date
+      - ward_name
+      - zone_name
+      - area_name
+    allowed_series:
+      - ward_name
+      - zone_name
+      - area_name
+
+disallowed_dimensions:
+  - ward_id
+  - person_name
+  - person_location
+  - cancel_location
+  - call_id
+  - qa_ready_flag
+  - timestamp_utc
+  - cancel_timestamp_utc
+  - call_name
+  - cancel_person
+  - cancellation_trigger
+  - triggered_by
+
+selection_rules:
+  prefer_line_when_x_role:
+    - time
+
+  prefer_bar_when_x_role:
+    - categorical
+    - ordered_category
+
+  prefer_horizontal_bar_for_ranking: true
+  prefer_stacked_bar_when_series_present: true
+
+validation_hints:
+  pie_requires_single_group_by: true
+  pie_max_categories: 6
+  scatter_prefers_two_numeric_axes: false
+  scatter_disallow_categorical_x: false
+  time_trend_default_dimension: call_date
+  max_categories_without_warning: 20
+  max_series_without_warning: 8
+  disallow_multi_metric_same_chart: true
+  privacy_note: Avoid person-level charts; use aggregate operational dimensions only.
+
+titles:
+  auto_title_templates:
+    line: "{metric_label} over {x_label}"
+    area: "{metric_label} over {x_label}"
+    bar: "{metric_label} by {x_label}"
+    horizontal_bar: "{metric_label} by {x_label}"
+    stacked_bar: "{metric_label} by {x_label} split by {series_label}"
+
+formatting:
+  round_numeric_metrics:
+    avg_response_time: 2
+    avg_staying_time: 2
+    median_response_time: 2
+    median_staying_time: 2
+    p75_response_time: 2
+    p90_response_time: 2
+    p90_staying_time: 2
+    p95_staying_time: 2
+    response_within_2_min_rate: 2
+    response_within_3_min_rate: 2
+    response_over_5_min_rate: 2
+
+  default_sort:
+    line: x_asc
+    area: x_asc
+    bar: metric_desc
+    horizontal_bar: metric_desc
+    stacked_bar: x_asc

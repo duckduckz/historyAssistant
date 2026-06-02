@@ -1,0 +1,125 @@
+{
+  "prefix": "TR",
+  "label": "Trend",
+  "summary": {
+    "prefix": "TR",
+    "total": 10,
+    "correct": 0,
+    "wrong": 10,
+    "skipped": 0,
+    "accuracy_pct": 0.0,
+    "average_latency_sec": 7.44
+  },
+  "results": [
+    {
+      "eval_id": "TR1",
+      "scenario": "Trend",
+      "scenario_subtype": "monthly trend",
+      "question": "How has call volume changed from January to March 2024?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.546,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR2",
+      "scenario": "Trend",
+      "scenario_subtype": "monthly totals",
+      "question": "Show me the total calls per month for the first half of 2024.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.438,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR3",
+      "scenario": "Trend",
+      "scenario_subtype": "daily recent trend",
+      "question": "How has the number of calls changed over the last 7 days?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.391,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR4",
+      "scenario": "Trend",
+      "scenario_subtype": "response trend",
+      "question": "How has average response time changed over the last 3 months?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.421,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR5",
+      "scenario": "Trend",
+      "scenario_subtype": "staying trend",
+      "question": "How has average staying time changed over the last 3 months?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.36,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR6",
+      "scenario": "Trend",
+      "scenario_subtype": "time-bucket trend",
+      "question": "How has call volume changed week by week this month?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.39,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR7",
+      "scenario": "Trend",
+      "scenario_subtype": "filtered trend",
+      "question": "How have calls changed over time for ward 2V ZONE 2A?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.5,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR8",
+      "scenario": "Trend",
+      "scenario_subtype": "shift trend",
+      "question": "How have night shift calls changed over the last month?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.516,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR9",
+      "scenario": "Trend",
+      "scenario_subtype": "call type trend",
+      "question": "How have Panic calls changed from April to June 2024?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.281,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "TR10",
+      "scenario": "Trend",
+      "scenario_subtype": "broad trend phrasing",
+      "question": "Has the calls been changing from Feb to May 2024?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.578,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    }
+  ]
+}

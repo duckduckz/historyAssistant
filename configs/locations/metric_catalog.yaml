@@ -1,0 +1,150 @@
+catalog_version: 1
+
+es_semantics_legend:
+  purpose: Defines metric meaning for person location and movement history independent of planner implementation details.
+  applies_after_filters:
+    - time filters
+    - person filters
+    - person type filters
+    - ward, area, passage, and zone filters
+  numeric_rounding: Returned values may be rounded by presentation layer.
+
+metrics:
+
+  numeric_summary:
+    table: historyLocations
+    description: Generic numeric summary over an allowed location measure field. Use when the user asks for average, minimum, maximum, or total numeric location-update measures such as time gaps between updates.
+    aggregation: numeric_summary
+    output_type: scalar
+    default_scope: raw
+    default_outlier_policy: none
+    parameterized: true
+    chartable: true
+    es_semantics:
+      es_aggregation: Dynamic numeric aggregation over metric_params.field.
+      result_type: scalar
+
+  location_update_count:
+    table: historyLocations
+    description: Count of location update records, used as a simple volume metric after person, time, or place filters.
+    aggregation: count
+    field: locationUpdateId
+    output_type: count
+    unit: location_updates
+    required_columns:
+      - locationUpdateId
+    default_scope: raw
+    default_outlier_policy: none
+    es_semantics:
+      es_aggregation: COUNT(locationUpdateId)
+      null_handling: locationUpdateId nulls are excluded
+      result_type: scalar
+
+  movement_event_count:
+    table: historyLocations
+    description: Count of distinct movement bouts (episodes) for a tracked person. A bout is a continuous period of movement separated by gaps of more than 15 minutes. Use this for questions asking how many times someone moved, exercised, walked, or was active.
+    aggregation: cardinality
+    field: episode_id
+    output_type: count
+    unit: movement_bouts
+    required_columns:
+      - episode_id
+      - personId
+      - timestamp
+    default_scope: raw
+    default_outlier_policy: none
+    es_semantics:
+      es_aggregation: CARDINALITY(episode_id)
+      null_handling: episode_id nulls are excluded
+      result_type: scalar
+
+  movement_details:
+    table: historyLocations
+    description: Raw movement/location records showing who moved or was tracked, when they were seen, the current location, and the previous location when available. Use this when the user asks to show/list detailed movement records or paths instead of only a count.
+    aggregation: raw_records
+    field: locationUpdateId
+    output_type: records
+    chartable: false
+    unit: records
+    default_scope: raw
+    default_outlier_policy: none
+    default_order_by:
+      field: timestamp
+      direction: desc
+    display_columns:
+      - locationUpdateId
+      - personId
+      - personFirstName
+      - personType
+      - timestamp
+      - ward
+      - area
+      - passage
+      - zoneName
+      - movement_status
+      - movement_detail
+      - prev_location
+    es_semantics:
+      es_query: raw _source records with filters, sorted by timestamp descending unless the plan requests another sort
+      result_type: records
+
+  last_known_location:
+    table: historyLocations
+    description: Most recent location record for a person or filtered group, used to answer where someone was last seen.
+    aggregation: raw_records
+    field: locationUpdateId
+    output_type: records
+    chartable: false
+    unit: records
+    default_limit: 1
+    default_scope: raw
+    default_outlier_policy: none
+    default_order_by:
+      field: timestamp
+      direction: desc
+    display_columns:
+      - locationUpdateId
+      - personId
+      - personFirstName
+      - personType
+      - timestamp
+      - ward
+      - area
+      - passage
+      - zoneName
+      - movement_status
+      - movement_detail
+      - prev_location
+    es_semantics:
+      es_query: newest raw _source record after filters
+      result_type: records
+
+  location_details:
+    table: historyLocations
+    description: Raw location records matching the filters, used to answer where a person was at a specific day, time, ward, area, passage, or zone.
+    aggregation: raw_records
+    field: locationUpdateId
+    output_type: records
+    chartable: false
+    unit: records
+    default_scope: raw
+    default_outlier_policy: none
+    default_order_by:
+      field: timestamp
+      direction: desc
+    display_columns:
+      - locationUpdateId
+      - personId
+      - personFirstName
+      - personType
+      - timestamp
+      - ward
+      - area
+      - passage
+      - zoneName
+      - movement_status
+      - movement_detail
+      - prev_location
+    es_semantics:
+      es_query: raw _source records with filters, sorted by timestamp descending unless the plan requests another sort
+      result_type: records

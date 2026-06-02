@@ -1,0 +1,125 @@
+{
+  "prefix": "RF",
+  "label": "Ranking/Filter",
+  "summary": {
+    "prefix": "RF",
+    "total": 10,
+    "correct": 7,
+    "wrong": 3,
+    "skipped": 0,
+    "accuracy_pct": 70.0,
+    "average_latency_sec": 36.83
+  },
+  "results": [
+    {
+      "eval_id": "RF1",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "top N",
+      "question": "Which 5 wards had the most calls last week?",
+      "match": false,
+      "match_detail": "2V ZONE 2B: got=22.0 want=344.0; 2V ZONE 2A: got=25.0 want=329.0; 1V ZONE 1B: got=12.0 want=221.0",
+      "elapsed_sec": 33.5,
+      "root_cause": "answer_mismatch",
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF2",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "bottom N",
+      "question": "Which 5 wards had the fewest calls last week?",
+      "match": false,
+      "match_detail": "SERVICEFLATS: got=None want=6.0; GV ZONE KSW A: got=1.0 want=19.0; GV ZONE KSW B: got=1.0 want=44.0",
+      "elapsed_sec": 38.218,
+      "root_cause": "answer_mismatch",
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF3",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "best by metric",
+      "question": "Which wards had the quickest average response time July 2024?",
+      "match": true,
+      "match_detail": "grouped match (8 groups)",
+      "elapsed_sec": 37.625,
+      "root_cause": null,
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF4",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "worst by metric",
+      "question": "Which call types had the longest average staying time February 2024?",
+      "match": true,
+      "match_detail": "grouped match (7 groups)",
+      "elapsed_sec": 39.562,
+      "root_cause": null,
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF5",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "top N",
+      "question": "Which 3 call types were the most common 16 June 2024?",
+      "match": true,
+      "match_detail": "grouped match (3 groups)",
+      "elapsed_sec": 36.844,
+      "root_cause": null,
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF6",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "filtered top N",
+      "question": "Which 5 wards had the most Panic calls February 2024?",
+      "match": false,
+      "match_detail": "got=None want=nan",
+      "elapsed_sec": 34.875,
+      "root_cause": "answer_mismatch",
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF7",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "filtered ranking",
+      "question": "Which wards had the most calls during the night shift last week?",
+      "match": true,
+      "match_detail": "grouped match (8 groups)",
+      "elapsed_sec": 29.0,
+      "root_cause": null,
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF8",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "threshold ranking",
+      "question": "Which wards had the most calls taking over 5 minutes to answer 2024?",
+      "match": true,
+      "match_detail": "grouped match (10 groups)",
+      "elapsed_sec": 40.437,
+      "root_cause": null,
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF9",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "room ranking",
+      "question": "Which rooms had the highest number of calls June 2024?",
+      "match": true,
+      "match_detail": "grouped match (10 groups)",
+      "elapsed_sec": 38.062,
+      "root_cause": null,
+      "scenario_predicted": "filtering_ranking"
+    },
+    {
+      "eval_id": "RF10",
+      "scenario": "Ranking/filtering",
+      "scenario_subtype": "nurse phrasing",
+      "question": "Can you show me the busiest wards from last week?",
+      "match": true,
+      "match_detail": "grouped match (8 groups)",
+      "elapsed_sec": 40.203,
+      "root_cause": null,
+      "scenario_predicted": "filtering_ranking"
+    }
+  ]
+}

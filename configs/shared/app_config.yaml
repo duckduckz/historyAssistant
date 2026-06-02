@@ -1,0 +1,64 @@
+app:
+  name: HistoryAssistant
+  version: 0.0.0
+  mode: development
+
+database:
+  engine: elasticsearch
+  host: localhost
+  port: 9200
+  index: televic.history.call
+  
+
+data_sources:
+  calls:
+    canonical_table: historyCalls
+    index: televic.history.call
+    label: call records
+    description: Nurse-call event history.
+    data_path: data/historyCalls/03_processed/fact_history_calls_v3.csv
+    date_field: call_date
+    timestamp_field: timestamp_utc
+    source_id: calls
+  locations:
+    canonical_table: historyLocations
+    index: televic.history.location
+    label: location updates
+    description: Patient and staff location update history.
+    data_path: data/historyLocations/processed/fact_history_locations_v1.csv
+    date_field: timestamp
+    timestamp_field: timestamp
+    source_id: locations
+  workflows:
+    canonical_table: historyWorkflows
+    index: televic.history.workflow
+    label: workflow records
+    description: Workflow and presence event history.
+    data_path: data/historyWorkflows/processed/fact_history_workflows_v1.csv
+    date_field: workflow_date
+    timestamp_field: timestamp_utc
+    end_timestamp_field: cancel_timestamp_utc
+    source_id: workflows
+
+tables:
+  active_table: historyCalls
+  allowed_tables:
+    - historyCalls
+    - historyLocations
+    - historyWorkflows
+
+defaults:
+  scope_policy: qa_ready
+  outlier_policy: exclude_negative
+
+runtime:
+  max_result_rows: 70
+  default_limit: 10
+  pre_sort_fetch_multiplier: 10
+  quantile_interpolation: "linear"
+  narration_mode: "hybrid"
+
+logging: 
+  level: INFO
+  save_logs: true
+  log_path: ../07_outputs/logs/

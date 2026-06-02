@@ -1,0 +1,152 @@
+schema_version: 2
+
+policy:
+  enabled: true
+  active_table: historyLocations
+  default_chart_type: bar
+  max_group_by_fields: 2
+  allowed_chart_types:
+    - line
+    - bar
+    - horizontal_bar
+    - stacked_bar
+    - scatter
+    - dot_plot
+
+chart_types:
+  line:
+    description: Best for time trends or ordered movement comparisons.
+    supports_series: true
+  bar:
+    description: Best for comparing movement or location counts across categories.
+    supports_series: true
+  horizontal_bar:
+    description: Best for ranked patient, ward, area, or zone comparisons.
+    supports_series: false
+  stacked_bar:
+    description: Best for a category comparison split by a second category.
+    supports_series: true
+  scatter:
+    description: Best for showing individual points when categories are crowded.
+    supports_series: true
+  dot_plot:
+    description: Best for compact comparison across many categories.
+    supports_series: false
+
+dimensions:
+  timestamp:
+    label: Timestamp
+    role: time
+    semantic_type: temporal
+    allowed_chart_types: [line, bar, stacked_bar, scatter]
+    allowed_axis_slots: [x]
+
+  personFirstName:
+    label: Patient
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, dot_plot]
+    allowed_axis_slots: [x, y]
+
+  personType:
+    label: Person type
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, stacked_bar, dot_plot]
+    allowed_axis_slots: [x, y, series]
+
+  ward:
+    label: Ward
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, stacked_bar, dot_plot]
+    allowed_axis_slots: [x, y, series]
+
+  area:
+    label: Area
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, stacked_bar, dot_plot]
+    allowed_axis_slots: [x, y, series]
+
+  passage:
+    label: Passage
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, stacked_bar, dot_plot]
+    allowed_axis_slots: [x, y, series]
+
+  zoneName:
+    label: Zone
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, stacked_bar, dot_plot]
+    allowed_axis_slots: [x, y, series]
+
+  movement_status:
+    label: Movement status
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, stacked_bar, dot_plot]
+    allowed_axis_slots: [x, y, series]
+
+  movement_detail:
+    label: Movement detail
+    role: categorical
+    semantic_type: nominal
+    allowed_chart_types: [bar, horizontal_bar, stacked_bar, dot_plot]
+    allowed_axis_slots: [x, y, series]
+
+metrics:
+  location_update_count:
+    label: Location updates
+    unit: location_updates
+    allowed_chart_types: [line, bar, horizontal_bar, stacked_bar, scatter, dot_plot]
+    recommended_dimensions: [timestamp, ward, area, zoneName, personType]
+    allowed_series: [personType, ward, zoneName, movement_status]
+
+  movement_event_count:
+    label: Movement events
+    unit: movement_events
+    allowed_chart_types: [line, bar, horizontal_bar, stacked_bar, scatter, dot_plot]
+    recommended_dimensions: [timestamp, personFirstName, ward, area, zoneName, movement_status]
+    allowed_series: [personType, ward, zoneName, movement_status]
+
+disallowed_dimensions:
+  - locationUpdateId
+  - personId
+  - areaId
+  - wardId
+  - zoneId
+  - episode_id
+
+selection_rules:
+  prefer_line_when_x_role: [time]
+  prefer_bar_when_x_role: [categorical, ordered_category]
+  prefer_horizontal_bar_for_ranking: true
+  prefer_stacked_bar_when_series_present: true
+
+validation_hints:
+  pie_requires_single_group_by: true
+  pie_max_categories: 6
+  scatter_prefers_two_numeric_axes: false
+  scatter_disallow_categorical_x: false
+  time_trend_default_dimension: timestamp
+  max_categories_without_warning: 20
+  max_series_without_warning: 8
+  disallow_multi_metric_same_chart: true
+  privacy_note: Person labels may be encoded; charts shorten display labels but keep source rows unchanged.
+
+titles:
+  auto_title_templates:
+    line: "{metric_label} over {x_label}"
+    bar: "{metric_label} by {x_label}"
+    horizontal_bar: "{metric_label} by {x_label}"
+    stacked_bar: "{metric_label} by {x_label} split by {series_label}"
+
+formatting:
+  default_sort:
+    line: x_asc
+    bar: metric_desc
+    horizontal_bar: metric_desc
+    stacked_bar: x_asc

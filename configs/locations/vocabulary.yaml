@@ -1,0 +1,410 @@
+source_intent:
+  anchors:
+    - location
+    - locations
+    - location update
+    - location updates
+    - movement
+    - movements
+    - moved
+    - move
+    - mobility
+    - walk
+    - walking
+    - exercise
+    - exercising
+  generic_terms:
+    - activity
+    - busy
+    - busiest
+    - workload
+    - demand
+    - volume
+    - count
+    - events
+    - updates
+  intent_phrases:
+    movement_event_count:
+      - movement activity
+      - movement count
+      - movement events
+      - patient movement
+      - patient movement activity
+      - mobility activity
+      - walking activity
+    location_update_count:
+      - location activity
+      - location update activity
+      - location updates
+      - location update count
+      - tracking activity
+
+tables:
+  historyLocations:
+    synonyms:
+      - location
+      - locations
+      - person location
+      - patient location
+      - staff location
+      - resident location
+      - location tracking
+      - movement history
+      - tracking history
+      - indoor positioning
+      - movement
+      - movements
+      - exercise
+      - exercising
+      - walk
+      - walked
+      - walking
+      - mobility
+      - activity
+      - physical activity
+      - where was
+      - where were
+      - where is
+      - where are
+      - last seen
+      - last location
+      - current location
+
+metrics:
+  location_update_count:
+    synonyms:
+      - location update count
+      - location updates
+      - location update
+      - number of location records
+      - count location records
+      - how many location updates
+      - tracking record count
+      - number of times seen
+      - number of location observations
+    description: Number of location-tracking records logged for a person or area.
+    aliases_for_embedding:
+      - how often was the person tracked
+      - number of position updates
+
+  movement_event_count:
+    synonyms:
+      - movement
+      - movements
+      - movement count
+      - number of movements
+      - how many movements
+      - how often moved
+      - who moved
+      - who did move
+      - who has moved
+      - who was moving
+      - did the person move
+      - did the patient move
+      - did staff move
+      - move
+      - moved
+      - did the person exercise
+      - did the patient exercise
+      - did the person walk
+      - did the patient walk
+      - exercise
+      - exercised
+      - exercising
+      - walk
+      - walked
+      - walking
+      - mobility
+      - activity
+      - patient exercise
+      - patient exercising
+      - patient walking
+      - exercise count
+      - walking count
+      - mobility count
+      - activity count
+      - moved count
+      - count moved events
+      - movement events
+      - moved the most
+      - patients moved the most
+      - most movement
+      - most movements
+      - most active patients
+      - highest movement count
+      - who moved most
+      - which patients moved most
+    description: Number of movement events recorded for patients or staff, indicating physical activity.
+    aliases_for_embedding:
+      - how much did the patient walk
+      - how active were the residents
+      - patient mobility level
+      - daily movement count
+      - movement events per day
+      - how many movements happened each day
+      - total movements in a period
+      - movement activity over time
+
+  movement_details:
+    synonyms:
+      - movement details
+      - movement records
+    description: The individual movement events for a person — shows where they moved from and to, and when.
+    aliases_for_embedding:
+      - show me where the patient has been moving
+      - list each time the person changed location
+      - movement history of the resident
+
+  last_known_location:
+    synonyms:
+      - last known location
+      - last location
+      - latest location
+      - most recent location
+      - current location
+      - where is the person now
+      - where is the patient now
+      - where is staff now
+      - where was the person last seen
+      - where was the patient last seen
+      - where was staff last seen
+      - last seen
+      - last seen location
+      - latest tracked location
+    description: The most recent location where a person was tracked.
+    aliases_for_embedding:
+      - where the patient is right now
+      - latest known position
+      - where was the resident last spotted
+
+  location_details:
+    synonyms:
+      - location details
+      - location records
+    description: Raw location tracking records for a person — shows each observed position with timestamp.
+    aliases_for_embedding:
+      - where was the patient at a given time
+      - show the location history of the resident
+      - tracking records for a person
+
+dimensions:
+  personId:
+    synonyms:
+      - person id
+      - tracked person id
+      - patient id
+      - user id
+      - resident id
+      - staff id
+
+  personFirstName:
+    synonyms:
+      - person name
+      - person hash
+      - hashed person
+      - hashed name
+      - patient
+      - patients
+      - person
+      - people
+      - resident
+      - residents
+      - patient name
+      - patient hash
+    description: The identifier (hashed first name) of the tracked person, used to group by individual.
+    aliases_for_embedding:
+      - which patient or resident
+      - breakdown by person
+      - who was tracked
+
+  personType:
+    synonyms:
+      - person type
+      - tracked person type
+      - patient or staff
+      - patient or user
+      - type of person
+      - resident or staff
+    description: Whether the tracked person is a patient/resident or a staff member.
+    aliases_for_embedding:
+      - was it a patient or a nurse
+      - kind of tracked person
+
+  area:
+    synonyms:
+      - area
+      - location area
+      - area name
+      - place
+      - current area
+      - last area
+    description: The location area where a person was tracked.
+    aliases_for_embedding:
+      - which care area
+      - breakdown by place
+
+  ward:
+    synonyms:
+      - ward
+      - department
+      - unit
+      - location ward
+      - current ward
+      - last ward
+      - tracked ward
+    description: The ward or department where a person was tracked.
+    aliases_for_embedding:
+      - which department was the patient in
+      - breakdown by ward
+
+  passage:
+    synonyms:
+      - passage
+      - corridor
+      - hallway
+
+  zoneName:
+    synonyms:
+      - zone
+      - zone name
+      - location zone
+      - current zone
+      - last zone
+
+  movement_status:
+    synonyms:
+      - movement status
+      - status
+      - moved or rested
+      - continuous
+      - whether moved
+      - movement flag
+
+  movement_detail:
+    synonyms:
+      - movement detail
+      - detail
+      - stationary
+      - rested
+      - moved after gap
+      - moved_after_gap
+      - session start
+      - movement type
+
+  prev_location:
+    synonyms:
+      - previous location
+      - prior location
+      - last location before
+      - location before
+      - from location
+      - moved from
+
+time:
+  timestamp:
+    synonyms:
+      - timestamp
+      - location timestamp
+      - location time
+      - movement time
+      - tracking time
+      - update time
+      - position time
+      - last seen time
+      - date
+      - day
+      - time
+      - when
+      - at what time
+      - at which time
+
+bucket_intervals:
+  1h:
+    synonyms:
+      - hourly
+      - per hour
+      - each hour
+      - every hour
+      - by hour
+      - hour by hour
+    default_summary: avg
+
+  1d:
+    synonyms:
+      - daily
+      - per day
+      - each day
+      - every day
+      - day by day
+      - by day
+    default_summary: avg
+
+  1w:
+    synonyms:
+      - weekly
+      - per week
+      - each week
+      - every week
+      - week by week
+      - by week
+    default_summary: avg
+
+  1M:
+    synonyms:
+      - monthly
+      - per month
+      - each month
+      - every month
+      - month by month
+      - by month
+    default_summary: avg
+
+fast_path:
+  group_by_filter_conflicts:
+    - group_by_dimension: personFirstName
+      superseded_by_filter: personType
+
+  group_by_inference:
+    - dimension: personFirstName
+      mode: add_if_missing
+      any:
+        - patient
+        - patients
+        - person
+        - people
+        - resident
+        - residents
+        - who moved
+        - who exercised
+        - who was active
+        - most active patients
+
+    - dimension: ward
+      mode: add_if_missing
+      any:
+        - ward
+        - wards
+        - department
+        - departments
+        - unit
+        - units
+
+    - dimension: area
+      mode: add_if_missing
+      any:
+        - area
+        - areas
+        - place
+        - places
+
+    - dimension: zoneName
+      mode: add_if_missing
+      any:
+        - zone
+        - zones
+
+    - dimension: movement_status
+      mode: add_if_missing
+      any:
+        - movement status
+        - status

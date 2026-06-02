@@ -1,0 +1,110 @@
+catalog_version: 1
+
+es_semantics_legend:
+  purpose: Defines metric meaning for nurse/staff presence workflow history independent of planner implementation details.
+  applies_after_filters:
+    - time filters
+    - person filters
+    - ward and room filters
+    - shift filters
+  numeric_rounding: Returned values may be rounded by presentation layer.
+
+metrics:
+
+  numeric_summary:
+    table: historyWorkflows
+    description: Generic numeric summary over an allowed workflow measure field. Use when the user asks for average, minimum, maximum, or total workflow activation time or duration, optionally grouped by ward, room, shift, person, or workflow.
+    aggregation: numeric_summary
+    output_type: scalar
+    default_scope: raw
+    default_outlier_policy: none
+    parameterized: true
+    chartable: true
+    es_semantics:
+      es_aggregation: Dynamic numeric aggregation over metric_params.field.
+      result_type: scalar
+
+  presence_event_count:
+    table: historyWorkflows
+    description: Count of Presence workflow events, used to answer how often a nurse or staff member was present by person, ward, room, date, hour, or shift. Use this for questions asking presence count, presence events, comparing presence by shift/room/ward, or which room/ward/person had more presence.
+    aggregation: count_threshold
+    needs_overfetch: true
+    count_field: workflow_id
+    field: workflow_name
+    comparator: "="
+    threshold: Presence
+    required_workflow_name: Presence
+    output_type: count
+    unit: presence_events
+    required_columns:
+      - workflow_id
+      - workflow_name
+      - initiator_person
+      - timestamp_utc
+    default_scope: raw
+    default_outlier_policy: none
+    es_semantics:
+      es_aggregation: COUNT(workflow_id) over rows where workflow_name = Presence
+      null_handling: workflow_id and workflow_name nulls are excluded
+      result_type: scalar
+
+  presence_details:
+    table: historyWorkflows
+    description: Raw Presence workflow records showing who initiated presence, where it happened, and when it started. Use this when the user asks who was present, list presence records, or show exact presence details rather than only counts.
+    aggregation: raw_records
+    field: workflow_id
+    required_workflow_name: Presence
+    output_type: records
+    chartable: false
+    unit: records
+    default_scope: raw
+    default_outlier_policy: none
+    display_columns:
+      - workflow_id
+      - workflow_date
+      - timestamp_utc
+      - shift
+      - initiator_person
+      - workflow_name
+      - ward_name
+      - room_name
+    es_semantics:
+      es_query: raw _source Presence records with filters and sorting
+      result_type: records
+
+  presence_room_switch_within_minutes:
+    table: historyWorkflows
+    description: Detect cases where the same nurse or staff member has Presence workflow events in two different rooms within a short time window. Use this for questions asking whether a nurse was present in two different rooms within 5 minutes, or similar rapid room-switch checks.
+    aggregation: room_switch_within_minutes
+    field: timestamp_utc
+    person_field: initiator_person
+    room_field: room_name
+    timestamp_field: timestamp_utc
+    workflow_name_field: workflow_name
+    required_workflow_name: Presence
+    window_minutes: 5
+    max_scan_rows: 10000
+    default_result_limit: 20
+    output_type: count
+    chartable: false
+    unit: room_switch_events
+    required_columns:
+      - workflow_id
+      - workflow_name
+      - initiator_person
+      - room_name
+      - timestamp_utc
+    default_scope: raw
+    default_outlier_policy: none
+    display_columns:
+      - initiator_person
+      - first_room
+      - second_room
+      - first_timestamp
+      - second_timestamp
+      - minutes_between
+      - first_workflow_id
+      - second_workflow_id
+    es_semantics:
+      es_query: Presence workflow records sorted by staff/person and timestamp, followed by Python-side same-person different-room window comparison.
+      result_type: records

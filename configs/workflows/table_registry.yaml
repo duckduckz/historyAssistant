@@ -1,0 +1,135 @@
+tables:
+  historyWorkflows:
+    description: nurse and staff presence workflow history
+    source_id: workflows
+    es_index: televic.history.workflow
+    data_path: data/historyWorkflows/processed/fact_history_workflows_v1.csv
+
+    primary_key: workflow_id
+    grain: one row per workflow event
+
+    date_field: workflow_date
+    timestamp_field: timestamp_utc
+    identifiers:
+      - workflow_id
+
+    dimensions:
+      - shift
+      - workflow_name
+      - workflow_type
+      - ward_name
+      - room_name
+      - initiator_person
+      - workflow_dayofweek
+      - workflow_hour
+
+    semantic_fields:
+      ward: ward_name
+      room: room_name
+      person: initiator_person
+
+    dimension_value_maps:
+      shift:
+        field_type: keyword
+        allowed_values: [morning, afternoon, night, unknown]
+        description: Shift label as stored in workflow data.
+      workflow_name:
+        field_type: keyword
+        load_values_from_es: true
+        description: Name of the workflow, such as Presence.
+      workflow_type:
+        field_type: keyword
+        load_values_from_es: true
+        description: Type/category of workflow.
+      ward_name:
+        field_type: keyword
+        load_values_from_es: true
+        description: Ward name associated with the workflow.
+      room_name:
+        field_type: keyword
+        load_values_from_es: true
+        description: Room name associated with the workflow.
+      initiator_person:
+        field_type: keyword
+        description: Hashed person identifier for the nurse or staff member who initiated the Presence workflow. Use this dimension when the user asks who was present, which nurse/staff was present, who initiated presence, or wants presence grouped by person.
+      workflow_hour:
+        field_type: integer
+        description: Hour of workflow start, 0-23.
+      workflow_dayofweek:
+        field_type: integer
+        description: Day of week, 0=Monday and 6=Sunday.
+        value_map:
+          monday: 0
+          tuesday: 1
+          wednesday: 2
+          thursday: 3
+          friday: 4
+          saturday: 5
+          sunday: 6
+        allowed_values: [0, 1, 2, 3, 4, 5, 6]
+        display_value_map:
+          0: Monday
+          1: Tuesday
+          2: Wednesday
+          3: Thursday
+          4: Friday
+          5: Saturday
+          6: Sunday
+
+    event_fields: []
+
+    metrics:
+      - numeric_summary
+      - presence_event_count
+      - presence_details
+      - presence_room_switch_within_minutes
+
+    measure_fields:
+      - activation_time_min
+      - duration_sec
+
+    measure_field_maps:
+      activation_time_min:
+        field_type: number
+        allowed_aggregations: [avg, min, max, sum]
+        unit: minutes
+        description: Time between workflow activation and workflow start, in minutes.
+      duration_sec:
+        field_type: number
+        allowed_aggregations: [avg, min, max, sum]
+        unit: seconds
+        description: Workflow duration, in seconds. For Presence workflow questions, use this as presence duration and filter workflow_name to Presence.
+
+    dq_flags: []  # no DQ flag columns are available in the workflow ES index
+
+    scope_flags: []  # no qa_ready-style scope flag exists; workflow metrics use raw scope
+
+    timestamp_fields:
+      - timestamp_utc
+
+    time_field:
+      - workflow_date
+      - workflow_hour
+
+    keyword_fields:
+      - ward_name
+      - room_name
+
+    boolean_fields: []
+
+    numeric_outlier_fields: []
+
+    default_source_fields:
+      - workflow_id
+      - workflow_date
+      - timestamp_utc
+      - shift
+      - initiator_person
+      - workflow_name
+      - workflow_type
+      - ward_name
+      - room_name
+
+    timezone: UTC
+
+    narration: {}

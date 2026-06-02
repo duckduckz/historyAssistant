@@ -1,0 +1,688 @@
+source_intent:
+    anchors:
+        - call
+        - calls
+        - alarm
+        - alarms
+        - response time
+        - staying time
+        - priority
+        - call type
+    generic_terms:
+        - activity
+        - busy
+        - busiest
+        - workload
+        - demand
+        - volume
+        - count
+        - events
+        - updates
+    intent_phrases:
+        total_calls:
+            - call activity
+            - calls activity
+            - call workload
+            - call volume
+            - call demand
+            - call activity level
+            - calls received
+            - busy calls
+            - busiest calls
+
+tables:
+    historyCalls:
+        synonyms:
+            - call
+            - calls
+            - nurse call
+            - nurse calls
+            - alarm
+            - alarms
+            - call history
+            - call records
+            - patient call
+            - patient calls
+            - resident call
+            - resident calls
+            - nurse call workload
+            - call workload
+            - call demand
+            - alarm workload
+            - response time
+            - staying time
+            - priority
+
+metrics:
+    total_calls:
+        synonyms:
+            - total_calls
+            - number of calls
+            - calls made
+            - call count
+            - volume of calls
+            - how many calls
+            - count of calls
+            - call volume
+            - call workload
+            - call demand
+            - busiest call period
+            - number of alarms
+            - alarm count
+            - workload from calls
+        description: Total number of nurse calls or alarms triggered in the selected time period.
+        aliases_for_embedding:
+            - how busy were the nurses
+            - how many alarms went off
+            - call activity level
+            - busy period for the ward
+
+    avg_response_time:
+        synonyms:
+            - average response time
+            - mean response time
+            - response time average
+            - response time
+            - the response time
+            - response delay
+            - how long to respond
+            - how long it takes to respond
+            - time to respond
+            - usually take to respond
+            - nurse response time
+            - staff response time
+            - response performance
+            - response speed
+            - how fast staff respond
+            - how quickly calls are answered
+        description: Average elapsed time from when a call is raised until staff respond to it.
+        aliases_for_embedding:
+            - how fast did nurses react
+            - how long did staff take to pick up
+            - average reaction time of staff
+
+    avg_staying_time:
+        synonyms:
+            - average staying time
+            - mean staying time
+            - staying time average
+            - staying duration
+            - time spent
+            - call active time
+            - how long calls stay active
+            - how long alarms stay open
+            - active call duration
+        description: Average duration a call remained active from its start until it was cleared.
+        aliases_for_embedding:
+            - how long calls usually last
+            - average call open duration
+            - how long alarms stay on
+
+    median_response_time:
+        synonyms:
+            - median response time
+        description: The median (middle value) of staff response times — half of calls were answered faster than this.
+        aliases_for_embedding:
+            - typical time nurses take to respond
+            - response time that half the calls beat
+            - middle response speed of staff
+
+    median_staying_time:
+        synonyms:
+            - median staying time
+        description: The median duration a call remained active — half of calls resolved faster than this.
+        aliases_for_embedding:
+            - typical call duration
+            - how long calls usually stay open
+            - middle value of call active time
+
+    p90_response_time:
+        synonyms:
+            - p90 response time
+        description: The 90th percentile of response times — 90% of calls were answered within this duration.
+        aliases_for_embedding:
+            - slowest response time excluding the worst 10 percent
+            - response time for 9 out of 10 calls
+            - worst-case response time ignoring outliers
+
+    p90_staying_time:
+        synonyms:
+            - p90 staying time
+        description: The 90th percentile of staying times — 90% of calls cleared within this duration.
+        aliases_for_embedding:
+            - how long the longest 10 percent of calls stayed active
+            - upper-end call duration
+            - call active time for 9 out of 10 calls
+
+    p75_response_time:
+        synonyms:
+            - p75 response time
+        description: The 75th percentile of response times — 75% of calls were answered within this duration.
+        aliases_for_embedding:
+            - response time covering most calls
+            - three quarters of calls answered within this time
+            - typical upper bound for response speed
+
+    p95_staying_time:
+        synonyms:
+            - p95 staying time
+        description: The 95th percentile of staying times — captures the longest-lasting calls excluding extreme outliers.
+        aliases_for_embedding:
+            - duration of the longest-running calls
+            - how long calls take in the worst cases
+            - upper limit for call active time
+
+    response_within_2_min_rate:
+        synonyms:
+            - within 2 minutes rate
+        description: Percentage of calls where staff responded within 2 minutes — a common SLA target.
+        aliases_for_embedding:
+            - share of calls answered quickly enough
+            - how often nurses respond in under 2 minutes
+            - two-minute SLA compliance rate
+
+    response_within_3_min_rate:
+        synonyms:
+            - within 3 minutes rate
+        description: Percentage of calls where staff responded within 3 minutes.
+        aliases_for_embedding:
+            - how often staff meet the 3-minute response target
+            - three-minute compliance percentage
+            - proportion of calls answered within 3 minutes
+
+    response_over_5_min_rate:
+        synonyms:
+            - over 5 minutes response rate
+        description: Percentage of calls where staff response time exceeded 5 minutes — indicates delayed care.
+        aliases_for_embedding:
+            - share of slow responses
+            - how often nurses are too late to respond
+            - proportion of calls with unacceptably long response time
+
+    response_over_5_min_count:
+        synonyms:
+            - number of calls taking longer than 5 minutes to respond
+            - calls taking longer than 5 minutes to respond
+            - calls over 5 minutes to respond
+            - count of calls over 5 minutes response time
+            - number of slow responses
+            - slow response count
+            - delayed response count
+        description: Number of calls where staff response time exceeded five minutes.
+        aliases_for_embedding:
+            - count of severely delayed responses
+            - calls answered too late
+            - slow nurse reaction count
+
+    avg_calls_per_shift:
+        synonyms:
+            - average calls per shift
+        description: Average number of calls received per work shift across all wards.
+        aliases_for_embedding:
+            - how many calls a shift typically has
+            - call load per shift on average
+            - workload per duty period
+
+    avg_calls_per_zone:
+        synonyms:
+            - average calls per zone
+        description: Average number of calls per zone, showing which areas generate more call activity.
+        aliases_for_embedding:
+            - how busy each zone is on average
+            - call load distributed across zones
+            - typical call count per location area
+
+    dq_unknown_caller_rate:
+        synonyms:
+            - unknown caller rate
+        description: Percentage of calls where the person who made the call is unknown or missing from the record.
+        aliases_for_embedding:
+            - how often call origin is unidentified
+            - missing caller information percentage
+            - calls with no person recorded
+
+    dq_missing_location_and_caller_count:
+        synonyms:
+            - missing location and caller count
+        description: Number of calls missing both the room location and the caller identity simultaneously.
+        aliases_for_embedding:
+            - calls with no location and no person
+            - records with double missing fields
+            - how many calls have no location or caller
+
+    dq_invalid_priority_or_time_count:
+        synonyms:
+            - invalid priority or hour count
+        description: Number of calls with invalid or suspicious priority or timestamp values.
+        aliases_for_embedding:
+            - calls with bad priority data
+            - records with incorrect time or priority
+            - data quality issues in priority or timing
+
+    dq_calls_without_clearer_count:
+        synonyms:
+            - calls without clearer
+        description: Number of calls that were cleared without any staff member recorded as the one who cleared them.
+        aliases_for_embedding:
+            - calls resolved with no staff credited
+            - cleared calls missing the responder identity
+            - how many calls have no recorded clearer
+
+    dq_extreme_staying_time_rate:
+        synonyms:
+            - extreme staying time rate
+        description: Percentage of calls that remained active for an abnormally long time, indicating potential data quality issues.
+        aliases_for_embedding:
+            - share of calls open suspiciously long
+            - abnormal call duration percentage
+            - how often calls stay active too long
+
+    call_details:
+        synonyms:
+            - call details
+            - call records
+        description: The raw individual call records — shows each call with its timestamp, room, response time, and staff.
+        aliases_for_embedding:
+            - show me the actual calls
+            - list the individual call events
+            - see call-by-call information
+
+dimensions:
+    ward_name:
+        synonyms:
+            - ward
+            - department
+            - unit
+            - afdeling
+            - verpleegafdeling
+            - floor ward
+            # ward+zone values are stored combined, e.g. "2V ZONE 2A", "1V ZONE 1B", "GV ZONE KSW A"
+            # floor prefix: 1V = floor 1, 2V = floor 2, GV = ground floor
+            # when user says "floor 2" or "2nd floor", map to ward_name values starting with "2V"
+            # when user says "ground floor", map to ward_name values starting with "GV"
+        description: The ward, department, or unit where a nurse call was placed.
+        aliases_for_embedding:
+            - which department raised the call
+            - hospital floor or wing
+            - breakdown by ward
+
+    room_name:
+        synonyms:
+            - room
+            - kamer
+            - patient room
+            - room number
+            - bed room
+            - patient bed
+        description: The patient room from which a call was originated.
+        aliases_for_embedding:
+            - which patient room
+            - bed location
+            - breakdown by room
+
+    zone_name:
+        synonyms:
+            - zone
+            - location area
+            - section
+            - wing
+            - sub-ward
+            - zone area
+            - zone code
+        description: A sub-section of a ward used to group nearby rooms.
+        aliases_for_embedding:
+            - which zone
+            - breakdown by zone or wing
+
+    area_name:
+        synonyms:
+            - call area
+            - nursing area
+        description: A care area within the hospital from which nurse calls originated.
+        aliases_for_embedding:
+            - which care area had the most calls
+            - call grouping by area
+
+    shift:
+        synonyms:
+            - shift
+            - work shift
+            - duty period
+        description: The staff working shift (day, evening, night) during which a call occurred.
+        aliases_for_embedding:
+            - which shift the staff were on
+            - breakdown by working period
+
+    call_type:
+        synonyms:
+            - call type
+            - type of call
+            - category of call
+            - alarm call type
+        description: The category or type of the nurse call (e.g. normal, urgent, technical).
+        aliases_for_embedding:
+            - what kind of call was made
+            - call category breakdown
+
+    priority:
+        synonyms:
+            - priority
+            - urgency level
+            - criticality
+            - level of the call
+        description: The priority or urgency level assigned to a call.
+        aliases_for_embedding:
+            - how urgent the call was
+            - call urgency tier
+
+    person_name:
+        synonyms:
+            - patient
+            - caller
+        description: The name or identifier of the person who made the nurse call.
+        aliases_for_embedding:
+            - which patient raised the alarm
+            - who triggered the call
+            - breakdown by individual person
+
+    person_type:
+        synonyms:
+            - person type
+        description: Whether the caller was a patient, resident, or staff member.
+        aliases_for_embedding:
+            - what kind of person made the call
+            - patient versus staff breakdown
+            - caller category
+
+    call_dayofweek:
+        synonyms:
+            - day of week
+            - weekday
+        description: The day of the week on which the call occurred, used to detect weekly patterns.
+        aliases_for_embedding:
+            - which days of the week are busiest
+            - call pattern by weekday
+            - breakdown across Monday to Sunday
+
+    is_cancelled:
+        synonyms:
+            - cleared
+            - cancelled
+        description: Whether the call was cleared or cancelled by staff rather than answered normally.
+        aliases_for_embedding:
+            - calls that were closed without a response
+            - cancelled or dismissed calls
+            - calls where nurse pressed cancel
+
+time:
+    call_date:
+        synonyms:
+            - call date
+            - date of the call
+            - day of call
+            - day of the call
+            - when the call was made
+            - day
+            - date
+
+    call_month:
+        synonyms:
+            - call month
+            - month
+            - month over month
+            - monthly trend
+            - monthly breakdown
+
+    call_hour:
+        synonyms:
+            - call hour
+            - hour of the call
+            - time of the call
+            - when the call was made in hours
+            - hour 
+            - time of day
+
+    timestamp_utc:
+        synonyms:
+            - timestamp
+            - event time
+            - exact time
+            - call timestamp
+
+date_rules:
+    yesterday:
+        synonyms:
+            - yesterday
+            - most recent day
+            - latest day
+            - previous day
+
+    last_7_days:
+        synonyms:
+            - last 7 days
+            - most recent 7 days
+            - past week
+            - recent week
+
+    calendar_week:
+        synonyms:
+            - this week
+            - current week
+            - calendar week
+            - week to date
+            - most recent week
+
+    this_month:
+        synonyms:
+            - this month
+            - current month
+            - month to date
+
+    last_month:
+        synonyms:
+            - last month
+            - previous month
+            - most recent month
+            - latest month
+
+    custom_range:
+        synonyms:
+            - from and to
+            - during
+            - in february 2024
+            - in july 2024
+
+    none:
+        synonyms:
+            - all time
+            - overall
+            - without date filter
+            - full dataset
+
+outlier_policies:
+    exclude_negative:
+        synonyms:
+            - exclude negative
+            - ignore negative values
+            - remove invalid negative times
+            - keep only non negative values
+
+    cap_p95:
+        synonyms:
+            - cap p95
+            - cap at 95th percentile
+            - 95% capping
+            - winsorize high outliers
+            - trim extreme high values
+
+    none:
+        synonyms:
+            - no outlier handling
+            - raw outliers
+            - keep outliers
+            - no capping
+
+scope_policies:
+    qa_ready:
+        synonyms:
+            - qa ready
+            - cleaned data
+            - validated records
+            - production ready rows
+
+    raw:
+        synonyms:
+            - raw data
+            - all rows
+            - unfiltered data
+            - include noisy records
+
+    auto:
+        synonyms:
+            - automatic scope
+            - default scope
+            - decide scope automatically
+            - infer best scope
+
+comparison_terms:
+    compare:
+        synonyms:
+            - compare
+            - comparison
+            - versus
+            - vs
+            - compared to
+            - relative to
+            - against
+            - difference between
+            - change from
+            - how does it compare
+            - period over period
+            - week over week
+            - month over month
+            - year over year
+
+bucket_intervals:
+    1h:
+        synonyms:
+            - hourly
+            - per hour
+            - each hour
+            - every hour
+            - by hour
+            - hour by hour
+        default_summary: avg
+
+    1d:
+        synonyms:
+            - daily
+            - per day
+            - each day
+            - every day
+            - day by day
+            - by day
+        default_summary: avg
+
+    1w:
+        synonyms:
+            - weekly
+            - per week
+            - each week
+            - every week
+            - week by week
+            - by week
+        default_summary: avg
+
+    1M:
+        synonyms:
+            - monthly
+            - per month
+            - each month
+            - every month
+            - month by month
+            - by month
+        default_summary: avg
+
+    1Y:
+        synonyms:
+            - yearly
+            - per year
+            - each year
+            - every year
+            - year by year
+            - by year
+            - annually
+        default_summary: avg
+
+fast_path:
+    metric_inference:
+        - metric: response_over_5_min_count
+          mode: replace
+          all:
+              - respond
+          any:
+              - more than 5 minutes
+              - over 5 minutes
+              - longer than 5 minutes
+              - above 5 minutes
+
+        - metric: total_calls
+          mode: add_if_missing
+          any:
+              - most calls
+              - fewest calls
+              - total calls
+              - total historyCalls
+              - how many calls
+              - number of calls
+              - count of calls
+              - total_calls
+              - calls by
+              - calls per
+              - calls received
+              - received calls
+              - historyCalls by
+              - historyCalls per
+
+    group_by_inference:
+        - dimension: call_dayofweek
+          mode: add_if_missing
+          any:
+              - day of the week
+              - days of the week
+              - weekday
+              - weekdays
+              - each day
+
+        - dimension: call_hour
+          mode: add_if_missing
+          any:
+              - each hour
+              - by hour
+              - per hour
+              - every hour
+              - at each hour
+              - call_hour
+
+    group_by_from_time_entities:
+        - call_hour
+        - call_dayofweek
+        - call_month
+
+    date_rule_overrides:
+        - from: last_7_days
+          to: rolling_days
+          date_params:
+              days: 7
+
+        - metric: total_calls
+          from: rolling_days
+          to: last_calendar_week
+          any:
+              - last week
+          none:
+              - last 7 days
+              - past week
+              - recent week
+              - most recent 7 days
+    

@@ -1,0 +1,133 @@
+tables:
+  historyLocations:
+    description: person movement history and last known tracked locations
+    source_id: locations
+    es_index: televic.history.location
+    data_path: data/historyLocations/processed/fact_history_locations_v1.csv
+
+    primary_key: locationUpdateId
+    grain: one row per location update event
+
+    date_field: timestamp
+    timestamp_field: timestamp
+
+    identifiers:
+      - locationUpdateId
+      - personId
+      - areaId
+      - wardId
+      - zoneId
+      - episode_id
+
+    dimensions:
+      - personId
+      - personFirstName
+      - personType
+      - area
+      - ward
+      - passage
+      - zoneName
+      - movement_status
+      - movement_detail
+      - prev_location
+
+    semantic_fields:
+      ward: ward
+      zone: zoneName
+      area: area
+      person: personFirstName
+      person_id: personId
+      person_type: personType
+
+    dimension_value_maps:
+      personId:
+        field_type: integer
+        description: Tracked person identifier.
+      personFirstName:
+        field_type: keyword
+        description: Hashed person label from the source data. Use this dimension when the user asks who moved, which patient moved, who exercised, which person was active, or wants movement grouped by person.
+      personType:
+        field_type: keyword
+        allowed_values: [Patient, User]
+        description: Type of tracked person, such as Patient or staff type.
+      area:
+        field_type: keyword
+        load_values_from_es: true
+        description: Area name from the location update.
+      ward:
+        field_type: keyword
+        load_values_from_es: true
+        description: Ward name from the location update.
+      passage:
+        field_type: keyword
+        description: Passage, corridor, or hallway associated with the location update.
+      zoneName:
+        field_type: keyword
+        load_values_from_es: true
+        description: Zone name from the location update.
+      movement_status:
+        field_type: keyword
+        description: High-level movement status. moved means the area changed, rested means a long tracking gap, continuous means no area change and no long gap.
+      movement_detail:
+        field_type: keyword
+        description: Detailed movement label such as session_start, moved, moved_after_gap, rested, or stationary.
+    event_fields: []
+
+    metrics:
+      - numeric_summary
+      - location_update_count
+      - movement_event_count
+      - movement_details
+      - last_known_location
+      - location_details
+
+    measure_fields:
+      - time_gap_minutes
+
+    measure_field_maps:
+      time_gap_minutes:
+        field_type: number
+        allowed_aggregations: [avg, min, max, sum]
+        unit: minutes
+        description: Time gap in minutes since the previous location update.
+
+    dq_flags: []  # no DQ flag columns are available in the location ES index
+
+    scope_flags: []  # no qa_ready-style scope flag exists; location metrics use raw scope
+
+    timestamp_fields:
+      - timestamp
+
+    time_field:
+      - timestamp
+
+    keyword_fields:
+      - personType
+      - area
+      - ward
+      - passage
+      - zoneName
+      - prev_location
+
+    boolean_fields: []
+
+    numeric_outlier_fields:
+      - time_gap_minutes
+
+    default_source_fields:
+      - locationUpdateId
+      - personId
+      - personFirstName
+      - personType
+      - timestamp
+      - ward
+      - area
+      - passage
+      - zoneName
+      - movement_status
+      - movement_detail
+      - prev_location
+
+    timezone: UTC
+
+    narration: {}

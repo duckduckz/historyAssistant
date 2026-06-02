@@ -1,0 +1,125 @@
+{
+  "prefix": "SL",
+  "label": "Simple Lookup",
+  "summary": {
+    "prefix": "SL",
+    "total": 10,
+    "correct": 10,
+    "wrong": 0,
+    "skipped": 0,
+    "accuracy_pct": 100.0,
+    "average_latency_sec": 6.6
+  },
+  "results": [
+    {
+      "eval_id": "SL1",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "date filter",
+      "question": "Show me the calls from March 2024.",
+      "match": true,
+      "match_detail": "got=5425 want=5425",
+      "elapsed_sec": 5.344,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL2",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "relative date",
+      "question": "Can I see the calls from second week of March 2024?",
+      "match": true,
+      "match_detail": "got=1120 want=1120",
+      "elapsed_sec": 3.109,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL3",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "exact date",
+      "question": "Show me the calls from 14 May 2024.",
+      "match": true,
+      "match_detail": "got=1 want=1",
+      "elapsed_sec": 2.719,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL4",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "exact date",
+      "question": "Can you show me the calls from 12 May 2024?",
+      "match": true,
+      "match_detail": "got=0 want=0",
+      "elapsed_sec": 2.313,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL5",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "lookup phrasing",
+      "question": "Please show me the call details for last week.",
+      "match": true,
+      "match_detail": "got=1158 want=1158",
+      "elapsed_sec": 3.141,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL6",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "dimension filter",
+      "question": "Show me the calls for ward 2V ZONE 2A.",
+      "match": true,
+      "match_detail": "got=10434 want=10434",
+      "elapsed_sec": 8.141,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL7",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "multi-filter",
+      "question": "Can I see the night shift calls from 25 June 2024?",
+      "match": true,
+      "match_detail": "got=37 want=37",
+      "elapsed_sec": 2.609,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL8",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "call type filter",
+      "question": "Show me the Panic calls from May 2024.",
+      "match": true,
+      "match_detail": "got=1 want=1",
+      "elapsed_sec": 6.141,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL9",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "ward plus date",
+      "question": "Let me see the calls for GV ZONE KSW A third week of July 2024.",
+      "match": true,
+      "match_detail": "got=62 want=62",
+      "elapsed_sec": 14.171,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    },
+    {
+      "eval_id": "SL10",
+      "scenario": "Simple lookup",
+      "scenario_subtype": "call type plus date",
+      "question": "Can I review the Care calls from 2024?",
+      "match": true,
+      "match_detail": "got=19711 want=19711",
+      "elapsed_sec": 18.297,
+      "root_cause": null,
+      "scenario_predicted": "simple_lookup"
+    }
+  ]
+}

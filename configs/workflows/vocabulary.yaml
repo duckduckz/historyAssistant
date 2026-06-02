@@ -1,0 +1,304 @@
+source_intent:
+  anchors:
+    - workflow
+    - workflows
+    - presence
+    - nurse presence
+    - staff presence
+    - caregiver presence
+    - nurse in room
+    - staff in room
+  generic_terms:
+    - activity
+    - busy
+    - busiest
+    - workload
+    - demand
+    - volume
+    - count
+    - events
+    - updates
+  intent_phrases:
+    presence_event_count:
+      - presence activity
+      - nurse presence activity
+      - staff presence activity
+      - workflow activity
+      - presence workflow activity
+      - presence count
+      - presence events
+
+tables:
+  historyWorkflows:
+    synonyms:
+      - presence
+      - nurse presence
+      - staff presence
+      - caregiver presence
+      - nurse in room
+      - staff in room
+      - who was present
+      - who is present
+      - presence history
+      - room presence
+      - presence workflow
+      - workflow presence
+
+metrics:
+  presence_event_count:
+    synonyms:
+      - presence events
+      - staff presence count
+      - nurse presence count
+    description: Number of times staff were recorded as present in a room or ward — measures how much staff attention each location received.
+    aliases_for_embedding:
+      - how often staff visited the room
+      - how many times nurses were in the room
+      - staff visit count
+      - which rooms received the most staff attention
+      - how much attention did each room get from nurses
+      - staff presence per room or ward
+      - rooms with the most nurse visits
+
+  presence_details:
+    synonyms:
+      - presence details
+      - presence records
+    description: The raw individual presence events — shows which staff member was present, in which room, and when.
+    aliases_for_embedding:
+      - show me who was in each room
+      - list the individual presence events for staff
+      - which nurses were present and when
+
+  presence_room_switch_within_minutes:
+    synonyms:
+      - room switch within 5 minutes
+      - rapid room switch
+    description: Cases where the same staff member was recorded as present in two different rooms within a short time window, which may indicate a data quality issue.
+    aliases_for_embedding:
+      - nurse appearing in two rooms too quickly
+      - staff present in different rooms within minutes
+      - impossible presence — same person in multiple rooms
+
+dimensions:
+  shift:
+    synonyms:
+      - shift
+      - work shift
+      - duty period
+      - morning shift
+      - afternoon shift
+      - night shift
+
+  workflow_name:
+    synonyms:
+      - workflow name
+      - presence workflow
+      - presence
+
+  workflow_type:
+    synonyms:
+      - workflow type
+      - presence type
+
+  ward_name:
+    synonyms:
+      - ward
+      - department
+      - unit
+      - presence ward
+      - ward where nurse was present
+      - ward where staff was present
+    description: The ward or department where staff presence was recorded.
+    aliases_for_embedding:
+      - which department staff visited
+      - breakdown by ward
+
+  room_name:
+    synonyms:
+      - room
+      - room name
+      - patient room
+      - presence room
+      - room where nurse was present
+      - room where staff was present
+      - kamer
+    description: The patient room where staff presence was recorded.
+    aliases_for_embedding:
+      - which room staff visited
+      - breakdown by room
+
+  initiator_person:
+    synonyms:
+      - nurse
+      - staff
+      - caregiver
+      - person
+      - initiator
+      - initiator person
+      - nurse id
+      - staff id
+      - person who was present
+      - person who initiated presence
+      - who initiated
+      - who was present
+      - which nurse
+      - which staff member
+    description: The staff member (nurse, caregiver) whose presence was recorded.
+    aliases_for_embedding:
+      - which caregiver was in the room
+      - breakdown by nurse
+      - which staff member visited
+
+  workflow_dayofweek:
+    synonyms:
+      - day of week
+      - weekday
+      - presence weekday
+      - presence day
+
+  workflow_hour:
+    synonyms:
+      - presence hour
+      - hour of presence
+      - hour
+      - time of day
+      - presence time of day
+
+time:
+  workflow_date:
+    synonyms:
+      - presence date
+      - workflow date
+      - date of presence
+      - day of presence
+      - which day
+      - day
+      - date
+
+  timestamp_utc:
+    synonyms:
+      - timestamp
+      - presence timestamp
+      - presence start time
+      - start time
+      - when presence started
+      - event time
+      - exact time
+      - when
+
+bucket_intervals:
+  1h:
+    synonyms:
+      - hourly
+      - per hour
+      - each hour
+      - every hour
+      - by hour
+      - hour by hour
+    default_summary: avg
+
+  1d:
+    synonyms:
+      - daily
+      - per day
+      - each day
+      - every day
+      - day by day
+      - by day
+    default_summary: avg
+
+  1w:
+    synonyms:
+      - weekly
+      - per week
+      - each week
+      - every week
+      - week by week
+      - by week
+    default_summary: avg
+
+  1M:
+    synonyms:
+      - monthly
+      - per month
+      - each month
+      - every month
+      - month by month
+      - by month
+    default_summary: avg
+
+fast_path:
+  metric_inference:
+    - metric: presence_event_count
+      mode: add_if_missing
+      any:
+        - presence
+        - nurse presence
+        - staff presence
+        - presence event
+        - presence events
+        - how many times present
+        - staff attention
+        - nurse attention
+        - room attention
+        - staff visits
+        - nurse visits
+        - staff visit
+
+  group_by_inference:
+    - dimension: initiator_person
+      mode: add_if_missing
+      any:
+        - nurse
+        - nurses
+        - staff
+        - caregiver
+        - caregivers
+        - initiator
+        - initiators
+        - who was present
+        - which nurse
+        - which staff
+
+    - dimension: room_name
+      mode: add_if_missing
+      any:
+        - room
+        - rooms
+        - patient room
+        - patient rooms
+
+    - dimension: ward_name
+      mode: add_if_missing
+      any:
+        - ward
+        - wards
+        - department
+        - departments
+        - unit
+        - units
+
+    - dimension: shift
+      mode: add_if_missing
+      any:
+        - shift
+        - shifts
+        - morning shift
+        - afternoon shift
+        - night shift
+
+    - dimension: workflow_dayofweek
+      mode: add_if_missing
+      any:
+        - day of week
+        - days of week
+        - weekday
+        - weekdays
+
+    - dimension: workflow_hour
+      mode: add_if_missing
+      any:
+        - hour
+        - hours
+        - time of day

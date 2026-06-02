@@ -1,0 +1,125 @@
+{
+  "prefix": "AG",
+  "label": "Aggregation",
+  "summary": {
+    "prefix": "AG",
+    "total": 10,
+    "correct": 6,
+    "wrong": 4,
+    "skipped": 0,
+    "accuracy_pct": 60.0,
+    "average_latency_sec": 27.4
+  },
+  "results": [
+    {
+      "eval_id": "AG1",
+      "scenario": "Aggregation",
+      "scenario_subtype": "count",
+      "question": "How many calls did we receive 25 March 2024?",
+      "match": true,
+      "match_detail": "got=178 want=178.0",
+      "elapsed_sec": 31.813,
+      "root_cause": null,
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG2",
+      "scenario": "Aggregation",
+      "scenario_subtype": "count by month",
+      "question": "How many calls did we have in March 2024?",
+      "match": true,
+      "match_detail": "got=5425 want=5425.0",
+      "elapsed_sec": 23.656,
+      "root_cause": null,
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG3",
+      "scenario": "Aggregation",
+      "scenario_subtype": "average",
+      "question": "What was the average response time of first week of April 2024?",
+      "match": true,
+      "match_detail": "got=609.66 want=609.66",
+      "elapsed_sec": 22.984,
+      "root_cause": null,
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG4",
+      "scenario": "Aggregation",
+      "scenario_subtype": "median",
+      "question": "What was the median response time of second week March 2024?",
+      "match": false,
+      "match_detail": "got=399.24 want=382.44",
+      "elapsed_sec": 23.312,
+      "root_cause": "answer_mismatch",
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG5",
+      "scenario": "Aggregation",
+      "scenario_subtype": "average",
+      "question": "What was the average staying time July 2024?",
+      "match": true,
+      "match_detail": "got=12.47 want=12.47",
+      "elapsed_sec": 22.797,
+      "root_cause": null,
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG6",
+      "scenario": "Aggregation",
+      "scenario_subtype": "rate",
+      "question": "What percentage of calls were answered within 2 minutes 20 June 2024?",
+      "match": true,
+      "match_detail": "got=22.61 want=22.61",
+      "elapsed_sec": 23.046,
+      "root_cause": null,
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG7",
+      "scenario": "Aggregation",
+      "scenario_subtype": "threshold count",
+      "question": "How many calls took more than 5 minutes to respond to last week?",
+      "match": false,
+      "match_detail": "got=28 want=513.0",
+      "elapsed_sec": 23.563,
+      "root_cause": "answer_mismatch",
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG8",
+      "scenario": "Aggregation",
+      "scenario_subtype": "grouped count",
+      "question": "How many calls did each ward have last week?",
+      "match": false,
+      "match_detail": "2V ZONE 2B: got=22.0 want=344.0; 2V ZONE 2A: got=25.0 want=329.0; 1V ZONE 1B: got=12.0 want=221.0",
+      "elapsed_sec": 35.61,
+      "root_cause": "answer_mismatch",
+      "scenario_predicted": "aggregation"
+    },
+    {
+      "eval_id": "AG9",
+      "scenario": "Aggregation",
+      "scenario_subtype": "grouped average",
+      "question": "What was the average response time by shift on 15 March 2024?",
+      "match": false,
+      "match_detail": "execution error: Error code: 429 - {'error': {'message': 'Too Many Requests', 'type': 'too_many_requests', 'param': None, 'code': 'too_many_requests'}}",
+      "elapsed_sec": 43.844,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "AG10",
+      "scenario": "Aggregation",
+      "scenario_subtype": "grouped summary",
+      "question": "On average, how many calls do we receive per shift 2024?",
+      "match": true,
+      "match_detail": "grouped match (3 groups)",
+      "elapsed_sec": 23.39,
+      "root_cause": null,
+      "scenario_predicted": "aggregation"
+    }
+  ]
+}

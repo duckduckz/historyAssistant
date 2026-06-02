@@ -1,0 +1,125 @@
+{
+  "prefix": "CH",
+  "label": "Chart",
+  "summary": {
+    "prefix": "CH",
+    "total": 10,
+    "correct": 0,
+    "wrong": 10,
+    "skipped": 0,
+    "accuracy_pct": 0.0,
+    "average_latency_sec": 7.42
+  },
+  "results": [
+    {
+      "eval_id": "CH1",
+      "scenario": "Chart",
+      "scenario_subtype": "explicit bar",
+      "question": "Show me a bar chart of calls by ward for last week.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.329,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH2",
+      "scenario": "Chart",
+      "scenario_subtype": "explicit line",
+      "question": "Show me a line chart of total calls by month 2024.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.437,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH3",
+      "scenario": "Chart",
+      "scenario_subtype": "explicit stacked bar",
+      "question": "Can you make a stacked bar chart of calls by ward and shift?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.422,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH4",
+      "scenario": "Chart",
+      "scenario_subtype": "explicit horizontal bar",
+      "question": "Show me a horizontal bar chart of the top 5 wards by call volume.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.578,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH5",
+      "scenario": "Chart",
+      "scenario_subtype": "explicit pie",
+      "question": "Show me a pie chart of call types for yesterday.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.359,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH6",
+      "scenario": "Chart",
+      "scenario_subtype": "generic chart intent",
+      "question": "Show me a chart of calls by shift this week.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.407,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH7",
+      "scenario": "Chart",
+      "scenario_subtype": "generic graph wording",
+      "question": "Can you graph the total calls by day for me?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.39,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH8",
+      "scenario": "Chart",
+      "scenario_subtype": "trend chart intent",
+      "question": "I'd like a chart showing how call volume changed over the March 2024.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.391,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH9",
+      "scenario": "Chart",
+      "scenario_subtype": "metric by type",
+      "question": "Please plot the average response time by call type.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.406,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CH10",
+      "scenario": "Chart",
+      "scenario_subtype": "operational visual",
+      "question": "Plot the calls by hour 2024 so I can see when things were busiest.",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.484,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    }
+  ]
+}

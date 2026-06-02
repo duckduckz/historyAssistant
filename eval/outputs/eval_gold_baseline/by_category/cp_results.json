@@ -1,0 +1,125 @@
+{
+  "prefix": "CP",
+  "label": "Comparison",
+  "summary": {
+    "prefix": "CP",
+    "total": 10,
+    "correct": 0,
+    "wrong": 10,
+    "skipped": 0,
+    "accuracy_pct": 0.0,
+    "average_latency_sec": 7.42
+  },
+  "results": [
+    {
+      "eval_id": "CP1",
+      "scenario": "Comparison",
+      "scenario_subtype": "period comparison",
+      "question": "Compare last week with the week before, which had more calls?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.36,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP2",
+      "scenario": "Comparison",
+      "scenario_subtype": "period comparison",
+      "question": "Was this month busier than last month?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.328,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP3",
+      "scenario": "Comparison",
+      "scenario_subtype": "shift comparison",
+      "question": "Did the night shift have more calls than the day shift yesterday?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.391,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP4",
+      "scenario": "Comparison",
+      "scenario_subtype": "ward comparison",
+      "question": "Between 2V ZONE 2A and 2V ZONE 2B, which had more calls this week?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.5,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP5",
+      "scenario": "Comparison",
+      "scenario_subtype": "ward metric comparison",
+      "question": "Which had the higher average response time, 1V ZONE 1A or 1V ZONE 1B?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.328,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP6",
+      "scenario": "Comparison",
+      "scenario_subtype": "type comparison",
+      "question": "Did Panic calls take longer to answer than Normal calls May 2024?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.484,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP7",
+      "scenario": "Comparison",
+      "scenario_subtype": "period metric comparison",
+      "question": "Was the average response time better this week than last week?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.453,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP8",
+      "scenario": "Comparison",
+      "scenario_subtype": "month comparison",
+      "question": "Compare March and April 2024, which month had more calls?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.375,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP9",
+      "scenario": "Comparison",
+      "scenario_subtype": "rate comparison",
+      "question": "Was the within-2-minute response rate better this week than last week?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.61,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    },
+    {
+      "eval_id": "CP10",
+      "scenario": "Comparison",
+      "scenario_subtype": "filtered period comparison",
+      "question": "Compare Panic calls this week with Panic calls last week. Which period had more?",
+      "match": false,
+      "match_detail": "execution error: Connection error.",
+      "elapsed_sec": 7.375,
+      "root_cause": "execution_failed",
+      "scenario_predicted": null
+    }
+  ]
+}
