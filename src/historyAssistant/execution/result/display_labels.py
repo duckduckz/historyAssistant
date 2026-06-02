@@ -1,0 +1,48 @@
+from __future__ import annotations
+
+FIELD_LABELS: dict[str, str] = {
+    # dimensions
+    "call_date": "Date",
+    "call_dayofweek": "Day of week",
+    "call_hour": "Hour",
+    "ward_name": "Ward",
+    "zone_name": "Zone",
+    "area_name": "Area",
+    "room_name": "Room",
+    "shift": "Shift",
+    "call_type": "Call type",
+    "priority": "Priority",
+    "person_type": "Person type",
+    "personFirstName": "Patient",
+    "personId": "Person ID",
+    "person_name": "Patient",
+    "initiator_person": "Initiator",
+    "is_cancelled": "Cancelled",
+    # raw record fields
+    "response_time_sec": "Response time (s)",
+    "staying_time_sec": "Staying time (s)",
+    "staying_time_min": "Staying time (min)",
+    "activation_time_min": "Activation time (min)",
+    "duration_sec": "Duration (s)",
+    "time_gap_minutes": "Time gap (min)",
+    # metrics
+    "total_calls": "Total calls",
+    "avg_response_time": "Avg response time",
+    "median_response_time": "Median response time",
+    "avg_staying_time": "Avg staying time",
+    "median_staying_time": "Median staying time",
+    "p75_response_time": "P75 response time",
+    "p90_response_time": "P90 response time",
+    "p90_staying_time": "P90 staying time",
+    "p95_staying_time": "P95 staying time",
+    "response_within_2_min_rate": "Within-2-min rate",
+    "response_within_3_min_rate": "Within-3-min rate",
+    "response_over_5_min_rate": "Over-5-min rate",
+    "avg_calls_per_shift": "Avg calls per shift",
+    "numeric_summary": "Numeric summary",
+    "movement_event_count": "movement events",
+    "location_update_count": "location updates",
+    "presence_event_count": "presence events",
+    # internal alias produced by execution
+    "metric_value": "Value",
+}
