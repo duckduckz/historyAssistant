@@ -1,0 +1,556 @@
+catalog_version: 2
+
+es_semantics_legend:
+  purpose: Defines exact metric meaning independent of planner implementation details.
+  applies_after_filters:
+    - scope policy filters
+    - time filters
+    - entity filters
+    - outlier policy filters
+  numeric_rounding: Returned values may be rounded by presentation layer.
+  quantile_interpolation_source: app_config.runtime.quantile_interpolation
+
+metrics:
+
+  numeric_summary:
+    table: historyCalls
+    description: Generic numeric summary over an allowed call measure field. Use when the user asks for average, minimum, maximum, total, median, or percentile of a numeric call field such as response time or staying time.
+    aggregation: numeric_summary
+    output_type: scalar
+    default_scope: qa_ready
+    default_outlier_policy: exclude_negative
+    parameterized: true
+    chartable: true
+    es_semantics:
+      es_aggregation: Dynamic numeric aggregation over metric_params.field.
+      result_type: scalar
+
+  total_calls:
+    table: historyCalls
+    description: Total number of calls
+    aggregation: count
+    field: call_id
+    output_type: count
+    default_scope: raw
+    default_outlier_policy: none
+    es_semantics:
+      es_aggregation: COUNT(call_id)
+      null_handling: call_id nulls are excluded by COUNT(column)
+      result_type: scalar
+
+  avg_response_time:
+    table: historyCalls
+    description: Mean response time for filtered calls.
+    aggregation: avg
+    field: response_time_sec
+    output_type: scalar
+    unit: seconds
+    required_columns:
+        - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    sort_aliases:
+        desc: [slowest, slowest response, longest response, slow response]
+        asc: [fastest, fastest response, quickest response, quick response]
+    es_semantics:
+      es_aggregation: AVG(response_time_sec)
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar
+
+  avg_staying_time:
+    table: historyCalls
+    description: Mean staying duration for filtered calls.
+    aggregation: avg
+    field: staying_time_min
+    output_type: scalar
+    unit: minutes
+    required_columns:
+      - staying_time_min
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    sort_aliases:
+        desc: [longest stay, longest stays, longest call, longest calls]
+        asc: [shortest stay, shortest stays, shortest call, shortest calls]
+    es_semantics:
+      es_aggregation: AVG(staying_time_min)
+      null_handling: null staying_time_min rows excluded
+      preconditions:
+        - staying_time_min IS NOT NULL
+      result_type: scalar
+
+  median_response_time:
+    table: historyCalls
+    description: Median response time for filtered calls.
+    aggregation: median
+    needs_overfetch: true
+    field: response_time_sec
+    output_type: scalar
+    unit: seconds
+    required_columns:
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: raw distribution values from response_time_sec
+      execution_post_processing: quantile(0.50, interpolation from app_config)
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar
+
+  median_staying_time:
+    table: historyCalls
+    description: Median staying duration for filtered calls.
+    aggregation: median
+    needs_overfetch: true
+    field: staying_time_sec
+    output_type: scalar
+    unit: seconds
+    required_columns:
+      - staying_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: raw distribution values from staying_time_sec
+      execution_post_processing: quantile(0.50, interpolation from app_config)
+      null_handling: null staying_time_sec rows excluded
+      preconditions:
+        - staying_time_sec IS NOT NULL
+      result_type: scalar
+
+  p90_response_time:
+    table: historyCalls
+    description: 90th percentile of response time.
+    aggregation: percentile
+    needs_overfetch: true
+    percentile: 0.90
+    field: response_time_sec
+    output_type: scalar
+    unit: seconds
+    required_columns:
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: raw distribution values from response_time_sec
+      execution_post_processing: quantile(0.90, interpolation from app_config)
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar
+
+  p90_staying_time:
+    table: historyCalls
+    description: 90th percentile of staying duration.
+    aggregation: percentile
+    needs_overfetch: true
+    percentile: 0.90
+    field: staying_time_sec
+    output_type: scalar
+    unit: seconds
+    required_columns:
+      - staying_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: raw distribution values from staying_time_sec
+      execution_post_processing: quantile(0.90, interpolation from app_config)
+      null_handling: null staying_time_sec rows excluded
+      preconditions:
+        - staying_time_sec IS NOT NULL
+      result_type: scalar
+
+  p75_response_time:
+    table: historyCalls
+    description: 75th percentile of response time.
+    aggregation: percentile
+    needs_overfetch: true
+    percentile: 0.75
+    field: response_time_sec
+    output_type: scalar
+    unit: seconds
+    required_columns:
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: raw distribution values from response_time_sec
+      execution_post_processing: quantile(0.75, interpolation from app_config)
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar
+
+  p95_staying_time:
+    table: historyCalls
+    description: 95th percentile of staying duration.
+    aggregation: percentile
+    needs_overfetch: true
+    percentile: 0.95
+    field: staying_time_sec
+    output_type: scalar
+    unit: seconds
+    required_columns:
+      - staying_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: raw distribution values from staying_time_sec
+      execution_post_processing: quantile(0.95, interpolation from app_config)
+      null_handling: null staying_time_sec rows excluded
+      preconditions:
+        - staying_time_sec IS NOT NULL
+      result_type: scalar
+
+  response_within_2_min_rate:
+    table: historyCalls
+    description: Percentage of calls answered within 120 seconds.
+    aggregation: rate_threshold
+    needs_overfetch: true
+    field: response_time_sec
+    comparator: <=
+    threshold: 120
+    output_type: scalar
+    unit: percent
+    required_columns:
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: 100.0 * AVG(CASE WHEN response_time_sec <= 120 THEN 1.0 ELSE 0.0 END)
+      denominator: filtered rows with response_time_sec IS NOT NULL
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar_percent
+
+  response_within_3_min_rate:
+    table: historyCalls
+    description: Percentage of calls answered within 180 seconds.
+    aggregation: rate_threshold
+    needs_overfetch: true
+    field: response_time_sec
+    comparator: <=
+    threshold: 180
+    output_type: scalar
+    unit: percent
+    required_columns:
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: 100.0 * AVG(CASE WHEN response_time_sec <= 180 THEN 1.0 ELSE 0.0 END)
+      denominator: filtered rows with response_time_sec IS NOT NULL
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar_percent
+
+  response_over_5_min_rate:
+    table: historyCalls
+    description: Percentage of calls with response time above 300 seconds.
+    aggregation: rate_threshold
+    needs_overfetch: true
+    field: response_time_sec
+    comparator: '>'
+    threshold: 300
+    output_type: scalar
+    unit: percent
+    required_columns:
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: 100.0 * AVG(CASE WHEN response_time_sec > 300 THEN 1.0 ELSE 0.0 END)
+      denominator: filtered rows with response_time_sec IS NOT NULL
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar_percent
+
+  response_over_5_min_count:
+    table: historyCalls
+    description: Count of calls with response time above 300 seconds.
+    aggregation: count_threshold
+    needs_overfetch: true
+    field: response_time_sec
+    comparator: '>'
+    threshold: 300
+    output_type: count
+    unit: calls
+    required_columns:
+      - call_id
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    es_semantics:
+      es_aggregation: COUNT(call_id) over rows where response_time_sec > 300
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+        - response_time_sec > 300
+      result_type: scalar
+
+  response_time_threshold_rate:
+    table: historyCalls
+    description: Parameterized percentage of calls whose response time matches a question-specific threshold.
+    aggregation: rate_threshold
+    needs_overfetch: true
+    field: response_time_sec
+    comparator: <=
+    threshold: 0
+    output_type: scalar
+    unit: percent
+    required_columns:
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    parameterized: true
+    allowed_metric_params:
+      field:
+        - response_time_sec
+      comparator:
+        - '<='
+        - '<'
+        - '>'
+        - '>='
+    es_semantics:
+      es_aggregation: 100.0 * AVG(CASE WHEN response_time_sec comparator threshold THEN 1.0 ELSE 0.0 END)
+      denominator: filtered rows with response_time_sec IS NOT NULL
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar_percent
+
+  response_time_threshold_count:
+    table: historyCalls
+    description: Parameterized count of calls whose response time matches a question-specific threshold.
+    aggregation: count_threshold
+    field: response_time_sec
+    comparator: <=
+    threshold: 0
+    output_type: scalar
+    unit: calls
+    required_columns:
+      - call_id
+      - response_time_sec
+    default_outlier_policy: exclude_negative
+    default_scope: qa_ready
+    parameterized: true
+    allowed_metric_params:
+      field:
+        - response_time_sec
+      comparator:
+        - '<='
+        - '<'
+        - '>'
+        - '>='
+    es_semantics:
+      es_aggregation: COUNT(call_id) over rows where response_time_sec comparator threshold
+      null_handling: null response_time_sec rows excluded
+      preconditions:
+        - response_time_sec IS NOT NULL
+      result_type: scalar
+
+  avg_calls_per_shift:
+    description: Mean call count per shift over selected period.
+    aggregation: avg_count_per_group
+    needs_overfetch: true
+    count_field: call_id
+    base_group:
+      - shift
+    output_type: scalar
+    unit: calls_per_shift
+    required_columns:
+      - shift
+      - call_id
+    default_outlier_policy: none
+    default_scope: qa_ready
+    es_semantics:
+      es_pattern: SELECT AVG(group_count) FROM (SELECT COUNT(call_id) AS group_count FROM fact_calls GROUP BY shift)
+      null_handling: null shift values form their own group unless filtered upstream
+      result_type: scalar
+
+  avg_calls_per_zone:
+    description: Mean call count per zone over selected period.
+    aggregation: avg_count_per_group
+    needs_overfetch: true
+    count_field: call_id
+    base_group:
+      - zone_name
+    output_type: scalar
+    unit: calls_per_zone
+    required_columns:
+      - zone_name
+      - call_id
+    default_outlier_policy: none
+    default_scope: qa_ready
+    es_semantics:
+      es_pattern: SELECT AVG(group_count) FROM (SELECT COUNT(call_id) AS group_count FROM fact_calls GROUP BY zone_name)
+      null_handling: null zone_name values form their own group unless filtered upstream
+      result_type: scalar
+
+  dq_unknown_caller_rate:
+    table: historyCalls
+    description: Percentage of calls with unknown caller type.
+    aggregation: dq_rate
+    needs_overfetch: true
+    dq_flag: dq_unknown_person_type_flag
+    output_type: scalar
+    unit: percent
+    required_columns:
+      - call_id
+      - dq_unknown_person_type_flag
+    default_outlier_policy: none
+    default_scope: raw
+    es_semantics:
+      es_aggregation: 100.0 * AVG(CASE WHEN COALESCE(dq_unknown_person_type_flag, 0) = 1 THEN 1.0 ELSE 0.0 END)
+      denominator: all filtered rows in raw scope
+      null_handling: dq flag null treated as 0
+      result_type: scalar_percent
+
+  dq_missing_location_and_caller_count:
+    table: historyCalls
+    description: Count of calls missing both location and caller information.
+    aggregation: dq_count_all_true
+    needs_overfetch: true
+    dq_flags:
+      - dq_unknown_location_flag
+      - dq_unknown_person_type_flag
+    output_type: count
+    unit: calls
+    required_columns:
+      - call_id
+      - dq_unknown_location_flag
+      - dq_unknown_person_type_flag
+    default_outlier_policy: none
+    default_scope: raw
+    es_semantics:
+      es_aggregation: SUM(CASE WHEN COALESCE(dq_unknown_location_flag, 0) = 1 AND COALESCE(dq_unknown_person_type_flag, 0) = 1 THEN 1 ELSE 0 END)
+      null_handling: dq flag null treated as 0
+      result_type: scalar_count
+
+  dq_invalid_priority_or_time_count:
+    table: historyCalls
+    description: Count of calls with invalid priority or invalid hour values.
+    aggregation: dq_count_any_true
+    needs_overfetch: true
+    dq_flags:
+      - dq_invalid_priority_flag
+      - dq_invalid_hour_flag
+    output_type: count
+    unit: calls
+    required_columns:
+      - call_id
+      - dq_invalid_priority_flag
+      - dq_invalid_hour_flag
+    default_outlier_policy: none
+    default_scope: raw
+    es_semantics:
+      es_aggregation: SUM(CASE WHEN COALESCE(dq_invalid_priority_flag, 0) = 1 OR COALESCE(dq_invalid_hour_flag, 0) = 1 THEN 1 ELSE 0 END)
+      null_handling: dq flag null treated as 0
+      result_type: scalar_count
+
+  dq_calls_without_clearer_count:
+    table: historyCalls
+    description: Count of closed calls where the person who pressed the cancel button is unknown.
+    aggregation: dq_count
+    needs_overfetch: true
+    dq_flag: dq_cancelled_missing_person_flag
+    output_type: count
+    unit: calls
+    required_columns:
+      - call_id
+      - dq_cancelled_missing_person_flag
+    default_outlier_policy: none
+    default_scope: raw
+    es_semantics:
+      es_aggregation: SUM(CASE WHEN COALESCE(dq_cancelled_missing_person_flag, 0) = 1 THEN 1 ELSE 0 END)
+      null_handling: dq flag null treated as 0
+      result_type: scalar_count
+
+  dq_extreme_staying_time_rate:
+    table: historyCalls
+    description: Percentage of calls flagged with extreme staying duration.
+    aggregation: dq_rate
+    needs_overfetch: true
+    dq_flag: dq_extreme_staying_time_flag
+    output_type: scalar
+    unit: percent
+    required_columns:
+      - call_id
+      - dq_extreme_staying_time_flag
+    default_outlier_policy: none
+    default_scope: raw
+    es_semantics:
+      es_aggregation: 100.0 * AVG(CASE WHEN COALESCE(dq_extreme_staying_time_flag, 0) = 1 THEN 1.0 ELSE 0.0 END)
+      denominator: all filtered rows in raw scope
+      null_handling: dq flag null treated as 0
+      result_type: scalar_percent
+
+  priority_value:
+    table: historyCalls
+    description: Priority value of the first matching call. Use for lookup queries asking what priority a specific call had.
+    aggregation: first_numeric
+    field: priority
+    output_type: count
+    chartable: false
+    required_columns:
+      - priority
+    default_scope: raw
+    default_outlier_policy: none
+    es_semantics:
+      es_aggregation: TOP_HITS(size=1, sort=timestamp_utc asc)._source.priority
+      result_type: scalar
+
+  call_details:
+    table: historyCalls
+    description: Return raw call records without aggregation. Use for lookup queries like "show me calls on date X" or "list calls for ward Y".
+    aggregation: raw_records
+    field: call_id
+    output_type: records
+    chartable: false
+    unit: records
+    required_columns: []
+    default_outlier_policy: none
+    default_scope: raw
+    # default_limit overrides app_config default_limit for raw-record queries.
+    # max_result_rows in app_config still acts as the hard upper cap.
+    default_limit: 70
+    # display_columns controls which fields are returned in _source.
+    # dq_* flags, qa_ready_flag, and internal duplicate fields are excluded
+    # so the user sees a clean, meaningful result table.
+    display_columns:
+      - call_id
+      - timestamp_utc
+      - cancel_timestamp_utc
+      - call_date
+      - call_hour
+      - call_dayofweek
+      - ward_name
+      - ward_id
+      - room_name
+      - zone_name
+      - area_name
+      - person_location
+      - call_type
+      - priority
+      - shift
+      - person_type
+      - person_name
+      - call_name
+      - triggered_by
+      - response_time_sec
+      - staying_time_sec
+      - staying_time_min
+      - is_cancelled
+      - cancel_person
+      - cancellation_trigger
+      - cancel_location
+    es_semantics:
+      es_aggregation: none
+      result_type: table
+      note: Returns actual document records, not aggregated values
+

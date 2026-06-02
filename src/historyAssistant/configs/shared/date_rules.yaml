@@ -1,0 +1,155 @@
+schema_version: 1
+canonical_date_rules:
+  - name: none
+    description: No date filter.
+    display_label: "all time"
+    mode: none
+    aliases:
+      - all time
+      - overall
+      - without date filter
+      - full dataset
+
+  - name: yesterday
+    description: Previous day relative to dataset max date.
+    display_label: "yesterday"
+    mode: rolling_days
+    start_day_offset: -1
+    end_day_offset: -1
+    es_gte: "now-1d/d"
+    es_lte: "now-1d/d"
+    aliases:
+      - yesterday
+      - most recent day
+      - latest day
+      - previous day
+
+  - name: today
+    description: Current reference day relative to dataset max date.
+    display_label: "today"
+    mode: rolling_days
+    start_day_offset: 0
+    end_day_offset: 0
+    es_gte: "now/d"
+    es_lte: "now/d"
+    aliases:
+      - today
+      - current day
+      - this day
+
+  - name: last_7_days
+    description: Last 7 days including reference day.
+    display_label: "last 7 days"
+    mode: rolling_days
+    start_day_offset: -6
+    end_day_offset: 0
+    es_gte: "now-6d/d"
+    es_lte: "now/d"
+    aliases:
+      - last week
+      - last 7 days
+      - most recent 7 days
+      - past week
+      - recent week
+
+  - name: rolling_days
+    description: Last N days including reference day, with N supplied separately.
+    display_label: "last {days} days"
+    mode: rolling_days_dynamic
+    aliases:
+      - last n days
+      - past n days
+      - most recent n days
+      - recent n days
+
+  - name: calendar_week
+    description: Current ISO calendar week (Monday-Sunday).
+    display_label: "this week"
+    mode: calendar_week_current
+    week_start: monday
+    es_gte: "now/w"
+    es_lt: "now+1w/w"
+    aliases:
+      - this week
+      - current week
+      - calendar week
+      - week to date
+      - most recent week
+
+  - name: last_calendar_week
+    description: Previous ISO calendar week (Monday-Sunday), the week before the current one.
+    display_label: "last week"
+    mode: calendar_week_previous
+    week_start: monday
+    es_gte: "now-1w/w"
+    es_lt: "now/w"
+    aliases:
+      - last week
+      - previous week
+      - the week before
+      - week before last
+      - prior week
+
+  - name: last_month
+    description: Previous calendar month.
+    display_label: "last month"
+    mode: calendar_month_previous
+    es_gte: "now-1M/M"
+    es_lt: "now/M"
+    aliases:
+      - last month
+      - previous month
+      - most recent month
+      - latest month
+
+  - name: this_month
+    description: Current calendar month to date, relative to dataset max date.
+    display_label: "this month"
+    mode: calendar_month_current
+    es_gte: "now/M"
+    es_lte: "now/d"
+    aliases:
+      - this month
+      - current month
+      - month to date
+
+  - name: custom_range
+    description: Explicit date/date-time range from question text.
+    display_label: null
+    mode: explicit_range
+    aliases:
+      - between
+      - from and to
+      - during
+
+day_parts:
+  morning:
+    start_time: "06:00"
+    end_time: "11:59"
+    aliases:
+      - morning
+      - morning time
+
+  afternoon:
+    start_time: "12:00"
+    end_time: "17:59"
+    aliases:
+      - afternoon
+      - afternoon time
+
+  evening:
+    start_time: "18:00"
+    end_time: "21:59"
+    aliases:
+      - evening
+      - evening time
+
+  night:
+    start_time: "22:00"
+    end_time: "05:59"
+    aliases:
+      - night
+      - night time
+      - overnight
+
+

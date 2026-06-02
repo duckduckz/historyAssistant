@@ -1,0 +1,372 @@
+policy:
+  enabled: true
+  match_mode: any_keyword
+  case_sensitive: false
+  normalize_text: true
+  semantic_threshold: 0.6
+  # Out-of-scope score must exceed in-scope score by this margin to block
+  in_scope_margin: 0.1
+  # Minimum similarity to in-scope examples required to pass through.
+  # Questions scoring below this are blocked as unrecognised topics (e.g. "how many calls made by doctor").
+  # Set to 0.0 to disable. Recommended starting value: 0.25
+  # NOTE: set to 0.0 for now - tune after verifying in_scope_examples load correctly
+  min_in_scope_score: 0.0
+
+responses:
+  out_of_scope: I can't find data regarding this question
+  unsafe: I can't help with that request.
+
+unsupported_topics:
+  - id: out_of_scope_clinical_vitals
+    category: out_of_scope
+    reason: Clinical vitals are not available in historyCalls fact data.
+    response_key: out_of_scope
+    examples:
+      - What are the patients blood pressure readings for today?
+      - Show oxygen saturation trends for ward 2A.
+    keywords:
+      - blood pressure
+      - systolic
+      - diastolic
+      - heart rate
+      - pulse
+      - oxygen saturation
+      - spo2
+      - respiratory rate
+      - body temperature
+      - glucose
+
+  - id: out_of_scope_staff_survey_hr
+    category: out_of_scope
+    reason: Staff survey and HR data are not available in historyCalls fact data.
+    response_key: out_of_scope
+    examples:
+      - What were the nurses satisfaction scores?
+      - Show employee performance ratings.
+    keywords:
+      - satisfaction score
+      - staff survey
+      - employee survey
+      - nurse satisfaction
+      - performance review
+      - payroll
+      - salary
+      - hr data
+
+  - id: out_of_scope_call_reason_cause
+    category: out_of_scope
+    reason: The reason or cause of a call (fall, pain, emergency type) is not recorded in the nurse call data. Only call type and priority are available.
+    response_key: out_of_scope
+    examples:
+      - How many calls were made because of a patient fall?
+      - How many fall-related calls were there last week?
+      - Which ward had the most emergency calls due to chest pain?
+      - How many calls were triggered by a patient pressing the emergency button by accident?
+      - Show me calls that were made for pain management.
+    keywords:
+      - because of a
+      - due to
+      - caused by
+      - reason for the call
+      - fall
+      - fell
+      - patient fell
+      - patient fall
+      - call reason
+      - cause of call
+      - triggered because
+      - emergency type
+      - pain call
+      - chest pain call
+      - accidental call
+
+  - id: out_of_scope_unanswered_missed_calls
+    category: out_of_scope
+    reason: The concept of an unanswered or missed call does not exist in the nurse call system. All recorded calls were eventually cleared. There is no flag for calls that were ignored or never responded to.
+    response_key: out_of_scope
+    examples:
+      - How many calls went unanswered?
+      - How many calls were missed?
+      - Were there calls that nobody responded to?
+      - How many calls were ignored by staff?
+      - What is the missed call rate?
+    keywords:
+      - unanswered
+      - missed call
+      - no one answered
+      - nobody responded
+      - ignored call
+      - calls ignored
+      - missed calls
+      - calls not answered
+      - calls nobody picked up
+      - call was ignored
+
+  - id: out_of_scope_physical_arrival
+    category: out_of_scope
+    reason: Physical arrival time of a nurse at the patient room is not tracked. Response time in the data measures time until the call was cleared on the system, not physical nurse arrival.
+    response_key: out_of_scope
+    examples:
+      - On average, how long did it take before a nurse physically arrived at the room after a call?
+      - How quickly did staff physically reach the patient after a call?
+      - What is the average time for a nurse to walk to the room after a call was made?
+      - How long before someone showed up in the room?
+    keywords:
+      - physically arrived
+      - physically reach
+      - arrive at the room
+      - arrival time
+      - showed up
+      - walked to the room
+      - reached the patient
+      - physically present
+      - nurse arrival
+      - staff arrived in person
+
+  - id: out_of_scope_telephony_call_center
+    category: out_of_scope
+    reason: Telephony and call center metrics (voicemail, IVR, FCR, CSAT, hold time, transfer rate) are not available in the nurse call system data.
+    response_key: out_of_scope
+    examples:
+      - How many calls went to voicemail?
+      - What is the first call resolution rate?
+      - What is the IVR drop-off rate?
+      - What is the customer satisfaction score for calls?
+      - How many calls were transferred to another department?
+      - What is the average hold time before a call was picked up?
+      - What percentage of calls were abandoned in the queue?
+    keywords:
+      - voicemail
+      - voice mail
+      - ivr
+      - interactive voice response
+      - first call resolution
+      - fcr rate
+      - csat
+      - customer satisfaction
+      - hold time
+      - on hold
+      - call transfer
+      - transferred to another
+      - call queue
+      - abandoned in queue
+      - auto attendant
+      - call recording
+      - dial tone
+      - ring time
+      - busy signal
+
+  - id: out_of_scope_finance_billing
+    category: out_of_scope
+    reason: Financial and billing data are not supported by this dataset.
+    response_key: out_of_scope
+    keywords:
+      - billing
+      - invoice
+      - cost per patient
+      - reimbursement
+      - insurance claim
+      - revenue
+      - profit
+
+  - id: out_of_scope_medication_lab
+    category: out_of_scope
+    reason: Medication and lab result data are not present in historyCalls fact data.
+    response_key: out_of_scope
+    examples:
+      - What medication should a patient take for severe chest pain?
+      - Give medical advice for someone with difficulty breathing.
+      - What should someone do at home for chest tightness?
+      - Is this patient having a heart attack based on these symptoms?
+    keywords:
+      - medical advice
+      - symptom
+      - symptoms
+      - chest pain
+      - severe chest pain
+      - chest tightness
+      - shortness of breath
+      - difficulty breathing
+      - heart attack
+      - treat at home
+      - what should someone do
+      - what medicine should
+      - medication
+      - dosage
+      - prescription
+      - lab result
+      - blood test
+      - pathology
+      - diagnosis
+
+  - id: unsafe_illegal_harmful
+    category: unsafe
+    reason: Disallow harmful, illegal, or violent instructions.
+    response_key: unsafe
+    keywords:
+      - make a bomb
+      - build explosive
+      - kill
+      - poison
+      - hack into
+      - ransomware
+      - ddos
+      - steal credentials
+
+  - id: unsafe_hate_harassment
+    category: unsafe
+    reason: Disallow hate, harassment, and abusive targeting requests.
+    response_key: unsafe
+    keywords:
+      - racist joke
+      - hate speech
+      - ethnic slur
+      - harass
+      - bully
+      - dox
+
+  - id: unsafe_explicit_sexual
+    category: unsafe
+    reason: Disallow explicit sexual content requests.
+    response_key: unsafe
+    keywords:
+      - explicit sexual
+      - porn
+      - erotic story
+      - sexual content
+
+  - id: privacy_sensitive_reidentification
+    category: unsafe
+    reason: Disallow attempts to reveal real identities from hashed identifiers.
+    response_key: unsafe
+    keywords:
+      - decrypt patient hash
+      - reveal real patient name
+      - identify this hash
+      - map hashed user to person
+      - who is this patient hash
+      - real identity behind hash
+      - unmask hashed patient
+      - reverse hash
+
+  - id: unsafe_prompt_injection_or_policy_bypass
+    category: unsafe
+    reason: Disallow requests to bypass instructions, reveal hidden prompts, or override safety policy.
+    response_key: unsafe
+    keywords:
+      - ignore previous instructions
+      - ignore all prior rules
+      - bypass safety
+      - disable safety
+      - reveal system prompt
+      - show hidden prompt
+      - print your instructions
+      - developer message
+      - jailbreak
+
+  - id: unsafe_data_exfiltration_bulk_sensitive
+    category: unsafe
+    reason: Disallow bulk extraction of sensitive raw records or identifiers from patient-related datasets.
+    response_key: unsafe
+    keywords:
+      - dump entire table
+      - export all records
+      - full raw dataset
+      - all patient hashes
+      - list all person_name values
+      - extract complete database
+      - copy all rows
+
+  - id: unsafe_secret_or_credential_access
+    category: unsafe
+    reason: Disallow attempts to retrieve credentials, secrets, tokens, or keys.
+    response_key: unsafe
+    keywords:
+      - api key
+      - access token
+      - password
+      - secret key
+      - credentials
+      - connection string
+      - private key
+      - ssh key
+
+  - id: out_of_scope_general_chit_chat
+    category: out_of_scope
+    reason: General conversation, weather, personal questions, and non-hospital topics are not supported. Only nurse-call analytics questions are in scope.
+    response_key: out_of_scope
+    examples:
+      - How is the weather today?
+      - What will you do tomorrow?
+      - Tell me a joke
+      - What is the capital of France?
+      - Can you write me a poem?
+      - What time is it?
+      - Who are you?
+      - What is your name?
+      - How are you doing?
+      - What did you eat today?
+      - Can you help me with my homework?
+      - What is the meaning of life?
+    keywords:
+      - how is the weather
+      - weather today
+      - weather tomorrow
+      - tell me a joke
+      - write me a poem
+      - write a story
+      - what time is it
+      - capital of
+      - what will you do
+      - what are you doing
+      - how are you doing
+      - what did you eat
+      - help me with my homework
+      - meaning of life
+      - who are you
+      - what is your name
+      - are you an ai
+      - are you a robot
+      - good morning
+      - good evening
+      - good night
+      - hello there
+      - nice to meet you
+
+allowlist_hints:
+  supported_focus:
+    - call volume and counts
+    - response and staying times
+    - SLA rates and percentiles
+    - trends by ward, zone, area, shift, call type, priority, person type
+    - data quality flags in fact table
+    - workflow presence event counts by shift, ward, room, date, and staff member
+    - nurse and staff presence workflow records
+  # Explicit in-scope example questions to reduce false positives in semantic matching
+  in_scope_examples:
+    - How many calls were made yesterday?
+    - What is the average response time for ward 2A?
+    - Show me the total calls by shift
+    - What was the staying time for patient calls last week?
+    - How many normal calls happened during the night shift?
+    - What is the SLA rate for priority 1 calls?
+    - Show call trends by zone
+    - How many calls were closed in February?
+    - What is the average staying time by call type?
+    - List the response times for care calls
+    - How many calls per ward last month?
+    - What percentage of calls met SLA?
+    - Show me data quality issues in the call records
+    - What was the busiest hour for calls?
+    - Compare response times between day and night shifts
+    - On average, how long did it take for staff to respond to a nurse call?
+    - How quickly did staff respond to calls last month?
+    - What is the average time staff took to respond?
+    - How long does it take for a nurse call to be responded to?
+    - How many nurse presence events happened per shift in March 2024?
+    - Count Presence workflow events by shift for March 2024
+    - Show staff presence counts by ward
+    - Which room had the most nurse presence events?
+    - Who was present in room K208 during the night shift?
+
+
